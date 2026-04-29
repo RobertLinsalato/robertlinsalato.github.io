@@ -11,16 +11,17 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
+    "@lekoarts/gatsby-theme-jodie": "^5.0.0",
     "gatsby": "^5.0.0",
+    "gatsby-plugin-manifest": "^5.16.0",
     "gatsby-plugin-sitemap": "^6.0.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "@lekoarts/gatsby-theme-jodie": "^5.0.0"
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "gatsby-plugin-image": "^3.0.0",
+    "gatsby-plugin-sharp": "^5.0.0",
     "gatsby-source-filesystem": "^5.0.0",
-    "gatsby-transformer-sharp": "^5.0.0",
-    "gatsby-plugin-sharp": "^5.0.0"
+    "gatsby-transformer-sharp": "^5.0.0"
   }
 }
