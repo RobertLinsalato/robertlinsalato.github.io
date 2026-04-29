@@ -8,14 +8,14 @@ const config: GatsbyConfig = {
     // You can overwrite values here that are used for the SEO component
     // You can also add new values here to query them like usual
     // See all options: https://github.com/LekoArts/gatsby-themes/blob/main/themes/gatsby-theme-jodie/gatsby-config.mjs
-    siteTitle: `Jodie`,
-    siteTitleAlt: `Jodie - Gatsby Starter Portfolio`,
-    siteHeadline: `Jodie - Gatsby Theme from @lekoarts`,
-    siteUrl: `https://jodie.lekoarts.de`,
-    siteDescription: `Image-heavy photography portfolio with colorful accents & customizable pages. Includes adaptive image grids powered by CSS grid and automatic image integration into projects.`,
+    siteTitle: `Robert Linsalato Jr`,
+    siteTitleAlt: `Robert Linsalato Jr - Portfolio`,
+    siteHeadline: `Robert Linsalato Jr - Game Developer & Audio Engineer`,
+    siteUrl: `https://robertlinsalato.com`,
+    siteDescription: `Portfolio of Robert Linsalato Jr, a game developer with experience in technical art and audio engineer specializing in live worship audio. Explore his projects and about page to learn more about his work and expertise.`,
     siteImage: `/banner.jpg`,
     siteLanguage: `en`,
-    author: `@lekoarts_de`,
+    author: `@robertlinsalato`,
   },
   trailingSlash: `always`,
   plugins: [
