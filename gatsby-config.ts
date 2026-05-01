@@ -40,9 +40,9 @@ const config: GatsbyConfig = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `jodie - @lekoarts/gatsby-theme-jodie`,
-        short_name: `jodie`,
-        description: `Image-heavy photography portfolio with colorful accents & customizable pages. Includes adaptive image grids powered by CSS grid and automatic image integration into projects.`,
+        name: `Robert Linsalato Jr - Portfolio`,
+        short_name: `RJL - Portfolio`,
+        description: `Portfolio of Robert Linsalato Jr, a game developer with experience in technical art and audio engineer specializing in live worship audio. Explore his projects and about page to learn more about his work and expertise.`,
         start_url: `/`,
         background_color: `#ffffff`,
         // This will impact how browsers show your PWA/website
