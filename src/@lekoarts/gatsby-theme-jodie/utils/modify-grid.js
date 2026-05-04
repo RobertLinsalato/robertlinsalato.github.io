@@ -1,9 +1,6 @@
-import {
-  onlyPages,
-  onlyProjects,
-} from "@lekoarts/gatsby-theme-jodie/src/utils/resolver-templates";
+// src/@lekoarts/gatsby-theme-jodie/utils/modify-grid.js
+import { onlyPages } from "@lekoarts/gatsby-theme-jodie/src/utils/resolver-templates"
 
-const modifyGrid = (data) => onlyPages(data);
-// const modifyGrid = (data) => onlyProjects(data)
+const modifyGrid = (data) => onlyPages(data)
 
-export default modifyGrid;
+export default modifyGrid
