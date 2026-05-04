@@ -27,7 +27,7 @@ const config: GatsbyConfig = {
           { name: `About Me`, slug: `/about` },
           { name: `Projects`, slug: `/projects` },
           { name: `Audio`, slug: `/audio` },
-          { name: `Museum`, slug: `/museum` },
+          { name: `Contact`, slug: `/contact` },
         ],
       },
     },
