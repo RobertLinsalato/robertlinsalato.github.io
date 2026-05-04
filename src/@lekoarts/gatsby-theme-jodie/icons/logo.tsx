@@ -1,7 +1,13 @@
 import * as React from "react"
 
 const Logo = () => (
-  <svg viewBox="0 13.5 33 33" data-asc="0.93" width="228.25" height="159.8000030517578"><defs/><g fill="#000000"><g transform="translate(0, 0)"><path d="M17.90 13.50Q24.35 13.50 27.80 16.38Q31.25 19.25 31.25 24Q31.25 29.45 27.88 32.20Q24.50 34.95 18.05 34.95L16.90 35.55L11.40 35.55L11.40 46.50L0 46.50L0 13.50L17.90 13.50M15.90 27.90Q17.75 27.90 18.68 27.22Q19.60 26.55 19.60 24.85Q19.60 23.20 18.68 22.50Q17.75 21.80 15.90 21.80L11.40 21.80L11.40 27.90L15.90 27.90M22.80 30.35L33.10 46.50L20.45 46.50L12.75 32.05L22.80 30.35ZM46.90 37.95L61.85 37.95L61.85 46.50L35.25 46.50L35.25 13.50L46.90 13.50L46.90 37.95Z"/></g></g></svg>
+  <svg width="100%" height="100%" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5">
+  <circle cx="7.5" cy="7.5" r="7.2" fill="#e7e7e7" stroke="#000" stroke-width="1"/>
+  <path d="M6.7,9.1c-0.3,-2.6 -1.3,-4.9 -2,-6.8c-1.4,-3.4 -4.8,-2.5 -8,-1.3c0.3,2.8 0.8,5.9 1.2,9l-1.4,0l-0.9,-16c0,0 11,2 15,3c0.8,0 1.6,0 2.4,-0.2c9,-1 12,6 4,8c5,-0 4,5 5,8l-0.2,0c-3,0 -6,0 -9,0Z" stroke="#000" stroke-width="0.5"/>
+  <path d="M4.2,7l-0.3,-7c0,0 9,-1 11,-2c1,-0 3,-0 4,3c1,3 -2,5 -5,6c-3,1 -9,3 -9,3" fill="#e7e7e7" stroke="#000" stroke-width="0.5"/>
+  <path d="M9.2,4l1,7l5,-2l-0,-2l-4,2l-1,-6l-2,1Z" stroke="#000" stroke-width="0.5"/>
+</svg>
+
 )
 
 export default Logo
