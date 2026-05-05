@@ -17,98 +17,98 @@ const SafeGridItem = GridItem as any;
 const SafeGatsbyImage = GatsbyImage as any;
 
 export type JodieHomepageProps = {
-  projects: {
+projects: {
     nodes: {
-      slug: string
-      title: string
-      cover: {
+    slug: string
+    title: string
+    cover: {
         childImageSharp: {
-          gatsbyImageData: IGatsbyImageData
+        gatsbyImageData: IGatsbyImageData
         }
-      }
-      __typename: "MdxProject"
+    }
+    __typename: "MdxProject"
     }[]
-  }
-  pages: {
+}
+pages: {
     nodes: {
-      slug: string
-      title: string
-      cover: {
+    slug: string
+    title: string
+    cover: {
         childImageSharp: {
-          gatsbyImageData: IGatsbyImageData
+        gatsbyImageData: IGatsbyImageData
         }
-      }
-      __typename: "MdxPage"
+    }
+        __typename: "MdxPage"
     }[]
-  }
+    }
 }
 
 const Homepage: React.FC<PageProps<JodieHomepageProps>> = ({ data: { pages, projects } }) => {
-  
-  // 💥 ONLY PULL PAGES: Game projects are mathematically excluded from the array
-  const items = [...pages.nodes] 
-  
-  const itemsCount = items.length
-  let divisor = 9
 
-  for (let i = 0; i < itemsCount; i++) {
+// 💥 ONLY PULL PAGES: Game projects are mathematically excluded from the array
+const items = [...pages.nodes] 
+
+const itemsCount = items.length
+let divisor = 9
+
+for (let i = 0; i < itemsCount; i++) {
     const quotient = itemsCount % divisor
     const quotientAlt = (itemsCount - 1) % divisor
 
     if (quotient === 0 || quotientAlt === 0) {
-      break
+        break
     }
 
     divisor -= 1
-  }
+}
 
-  return (
+return (
     <Layout>
-      <h1 sx={visuallyHidden} data-testid="page-title">
+    <h1 sx={visuallyHidden} data-testid="page-title">
         {locales.home}
-      </h1>
+    </h1>
 
       {/* --- CUSTOM TEXT SECTION USING NATIVE STYLES --- */}
-      <div 
+    <div 
         style={{ 
-          padding: "4rem 2rem", 
-          maxWidth: "800px", 
-          margin: "0 auto", 
-          textAlign: "center" 
+        padding: "4rem 2rem", 
+        maxWidth: "800px", 
+        margin: "0 auto", 
+        textAlign: "center" 
         }}
-      >
+    >
         <h2 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
-          Welcome to my portfolio
+        Hi There! 👋
         </h2>
         <p style={{ fontSize: "1.1rem", lineHeight: "1.6", color: "var(--theme-ui-colors-secondary, #888)" }}>
-          I am a game developer and student. This section now sits comfortably above my grid, 
-          which currently only displays my primary pages.
+            I'm Robert. I'm a game developer and audio engineer with a passion for creating immersive experiences.
+            This portfolio showcases my work in both fields, from game projects to live worship audio engineering.
         </p>
-      </div>
+    </div>
       {/* ----------------------------------------------- */}
 
-      <div className={`item-list-wrapper`} sx={itemListWrapperStyles}>
+    <div className={`item-list-wrapper`} sx={itemListWrapperStyles}>
         <div className={`item-list div${divisor}`}>
-          {items.length > 0 ? (
+        {items.length > 0 ? (
             items.map((item, index) => (
-              <SafeGridItem to={item.slug} className="item" key={item.title} sx={itemStyles} data-testid={item.title}>
+            <SafeGridItem to={item.slug} className="item" key={item.title} sx={itemStyles} data-testid={item.title}>
                 <SafeGatsbyImage
-                  loading={index === 0 ? `eager` : `lazy`}
-                  image={item.cover.childImageSharp.gatsbyImageData}
-                  alt=""
+                loading={index === 0 ? `eager` : `lazy`}
+                image={item.cover.childImageSharp.gatsbyImageData}
+                alt=""
                 />
                 <span>{item.title}</span>
-              </SafeGridItem>
+            </SafeGridItem>
             ))
-          ) : (
+        ) : (
             <div style={{ padding: "1rem" }}>
-              No pages found at the locations defined for "pagesPath"
+            No pages found at the locations defined for "pagesPath"
             </div>
-          )}
+        )}
         </div>
-      </div>
+    </div>
     </Layout>
-  )
+)
 }
 
 export default Homepage
