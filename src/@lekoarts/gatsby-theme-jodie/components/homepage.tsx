@@ -87,8 +87,20 @@ return (
     </div>
       {/* ----------------------------------------------- */}
 
-    <div className={`item-list-wrapper`} sx={itemListWrapperStyles}>
+<div className={`item-list-wrapper`} sx={itemListWrapperStyles}>
         <div className={`item-list div${divisor}`}>
+
+        {/* --- MANUAL PROJECTS CARD --- */}
+        <SafeGridItem to="/projects" className="item" sx={itemStyles} data-testid="Projects Link">
+            <img 
+            src="/projects-cover.jpg" 
+            alt="Game Projects" 
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+            />
+            <span>Game Projects</span>
+        </SafeGridItem>
+        {/* ---------------------------- */}
+
         {items.length > 0 ? (
             items.map((item, index) => (
             <SafeGridItem to={item.slug} className="item" key={item.title} sx={itemStyles} data-testid={item.title}>
