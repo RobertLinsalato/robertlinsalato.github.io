@@ -66,22 +66,22 @@ const Homepage: React.FC<PageProps<JodieHomepageProps>> = ({ data: { pages } }) 
       </h1>
 
       {/* --- CUSTOM TEXT SECTION USING NATIVE STYLES --- */}
-      <div 
+    <div 
         style={{ 
-          padding: "4rem 2rem", 
-          maxWidth: "800px", 
-          margin: "0 auto", 
-          textAlign: "center" 
+        padding: "4rem 2rem", 
+        maxWidth: "800px", 
+        margin: "0 auto", 
+        textAlign: "center" 
         }}
-      >
+    >
         <h2 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
-          Welcome to my portfolio
+        Hi There! 👋
         </h2>
         <p style={{ fontSize: "1.1rem", lineHeight: "1.6", color: "var(--theme-ui-colors-secondary, #888)" }}>
-          I am a game developer and student. This section now sits comfortably above my grid, 
-          which currently only displays my primary pages.
+            I'm Robert. I'm a game developer and audio engineer with a passion for creating immersive experiences.
+            This portfolio showcases my work in both fields, from game projects to live worship audio engineering.
         </p>
-      </div>
+    </div>
       {/* ----------------------------------------------- */}
 
       <div className={`item-list-wrapper`} sx={itemListWrapperStyles}>
