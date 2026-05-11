@@ -44,7 +44,7 @@ const config: GatsbyConfig = {
         short_name: `RJL - Portfolio`,
         description: `Portfolio of Robert Linsalato Jr, a game developer with experience in technical art and audio engineer specializing in live worship audio. Explore his projects and about page to learn more about his work and expertise.`,
         start_url: `/`,
-        background_color: `#ffffff`,
+        background_color: `#ebebeb`,
         // This will impact how browsers show your PWA/website
         // https://css-tricks.com/meta-theme-color-and-trickery/
         // theme_color: `#b75e09`,
