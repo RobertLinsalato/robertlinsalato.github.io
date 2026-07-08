@@ -6,6 +6,16 @@ custom: true
 cover: "./contact-cover-image.jpg"
 ---
 
+export const ThirdPartyIframePDF = () => {
+  return (
+    <iframe
+      src="https://drive.google.com/file/d/1IiRZOGib_0cZQY9RWEDslMksRykEnrmC/preview"
+      allowFullScreen
+      title="PDF Sample in Drive"
+    />
+  );
+};
+
 <div style={{ margin: `0 auto`, maxWidth: `70ch`, padding: `2rem` }}>
 
 <h1 data-testid="page-title">Contact me</h1>
@@ -22,13 +32,3 @@ cover: "./contact-cover-image.jpg"
 <ThirdPartyIframePDF />
 
 </div>
-
-const ThirdPartyIframePDF = () => {
-  return (
-    <iframe
-      src="https://drive.google.com/file/d/1IiRZOGib_0cZQY9RWEDslMksRykEnrmC/preview"
-      allowFullScreen
-      title="PDF Sample in Drive"
-    />
-  );
-};
