@@ -2,7 +2,7 @@
 import { jsx } from "theme-ui"
 import * as React from "react"
 import type { HeadFC, PageProps } from "gatsby"
-import { IGatsbyImageData, GatsbyImage } from "gatsby-plugin-image"
+import { IGatsbyImageData, GatsbyImage, StaticImage } from "gatsby-plugin-image"
 
 // Absolute theme imports
 import Layout from "@lekoarts/gatsby-theme-jodie/src/components/layout"
