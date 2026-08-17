@@ -1,0 +1,63 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ModelViewer from '../components/ModelViewer.jsx';
+
+const modelsDir = path.join(process.cwd(), 'public', 'models');
+let autoLibrary = [];
+
+if (fs.existsSync(modelsDir)) {
+  const categories = fs.readdirSync(modelsDir).filter(file => 
+    fs.statSync(path.join(modelsDir, file)).isDirectory()
+  );
+  
+  autoLibrary = categories.map(category => {
+    const categoryPath = path.join(modelsDir, category);
+    const files = fs.readdirSync(categoryPath).filter(file => file.endsWith('.glb'));
+    
+    return {
+      category: category.toUpperCase(), 
+      items: files.map((file, index) => ({
+        id: `${category}-${index}`,
+        name: file.replace('.glb', '').replace(/_/g, ' '), 
+        file: `/models/${category}/${file}`
+      }))
+    };
+  }).filter(cat => cat.items.length > 0); 
+}
+---
+
+<Layout title="3D Showcase">
+  <main class="site-container">
+    <Header activePage="3d-showcase" />
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// SYS.3D_SHOWCASE</h2>
+      </div>
+      
+      <div class="panel-body showcase-content">
+        <p>
+          Interactive terminal for viewing mesh geometry and rigged assets. Folders are auto-generated from the directory structure. Select a file from the directory below to initialize the WebGL rendering context.
+        </p>
+
+        <div class="hardware-carousel-wrapper viewer-wrapper">
+          <span class="panel-tag">/// SYS.VIEWPORT_RENDERER</span>
+          
+          <ModelViewer client:load assetLibrary={autoLibrary} />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .showcase-content { padding: 1.5rem; color: #c5c8c6; line-height: 1.6; }
+  .showcase-content p { margin-top: 0; margin-bottom: 2rem; font-size: 0.95rem; }
+  .viewer-wrapper { margin: 0; }
+</style>

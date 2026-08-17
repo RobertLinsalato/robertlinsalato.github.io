@@ -1,0 +1,173 @@
+---
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+
+const { title = "Robert Linsalato" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@arraypress/waveform-player@latest/dist/waveform-player.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@arraypress/waveform-player@latest/dist/waveform-player.css" />
+  </head>
+  <body>
+    <div class="site-container">
+      <slot />
+      
+    </div>
+
+    <div id="global-image-modal" class="modal-hidden">
+      <button id="modal-close-btn" aria-label="Close image">[ X ]</button>
+      
+      <img id="modal-image" src="" alt="Maximized view" />
+      
+      <div id="modal-nav-group">
+        <button id="modal-prev-btn" class="modal-nav-btn">&lt; PREV</button>
+        <button id="modal-next-btn" class="modal-nav-btn">NEXT &gt;</button>
+      </div>
+    </div>
+    <script>
+      let modalKeydownHandler: ((e: KeyboardEvent) => void) | undefined;
+
+      function setupImageModal() {
+        const modal = document.getElementById('global-image-modal');
+        const modalImg = document.getElementById('modal-image') as HTMLImageElement | null;
+        const closeBtn = document.getElementById('modal-close-btn');
+        const prevBtn = document.getElementById('modal-prev-btn');
+        const nextBtn = document.getElementById('modal-next-btn');
+
+        if (!modal || !modalImg || !closeBtn) return;
+
+        const images = Array.from(document.querySelectorAll<HTMLImageElement>('.carousel-image'));
+        let currentIndex = 0; 
+
+        const openModal = (e: MouseEvent) => {
+          const target = e.target as HTMLImageElement;
+          currentIndex = images.indexOf(target);
+          if (!modalImg) return;
+          modalImg.src = images[currentIndex].src;
+          modal.classList.remove('modal-hidden');
+        };
+
+        const closeModal = () => {
+          modal.classList.add('modal-hidden');
+          setTimeout(() => { modalImg.src = ''; }, 200); 
+        };
+
+        const navigateModal = (direction: number) => {
+          if (images.length === 0) return;
+          
+          currentIndex += direction;
+          
+          if (currentIndex < 0) currentIndex = images.length - 1;
+          if (currentIndex >= images.length) currentIndex = 0;
+          
+          modalImg.src = images[currentIndex].src;
+        };
+
+        images.forEach(img => {
+          img.removeEventListener('click', openModal); 
+          img.addEventListener('click', openModal);
+        });
+
+        // Wire up the click events
+        closeBtn.addEventListener('click', closeModal);
+        if (prevBtn) prevBtn.addEventListener('click', () => navigateModal(-1));
+        if (nextBtn) nextBtn.addEventListener('click', () => navigateModal(1));
+
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal();
+        });
+
+        if (modalKeydownHandler) {
+          document.removeEventListener('keydown', modalKeydownHandler);
+        }
+
+        modalKeydownHandler = (e) => {
+          if (!modal.classList.contains('modal-hidden')) {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft') navigateModal(-1);
+            if (e.key === 'ArrowRight') navigateModal(1);
+          }
+        };
+
+        document.addEventListener('keydown', modalKeydownHandler);
+      }
+
+      document.addEventListener('DOMContentLoaded', setupImageModal);
+      document.addEventListener('astro:page-load', setupImageModal);
+    </script>
+  </body>
+  <Footer />
+</html>
+
+<style>
+
+  #modal-nav-group {
+    position: absolute;
+    bottom: 2rem;
+    display: flex;
+    gap: 1.5rem;
+    z-index: 10001;
+  }
+
+  #modal-image {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border: 1px solid var(--border, #33373b);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.8);
+  }
+
+  #modal-close-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    background: transparent;
+    border: none;
+    color: var(--accent, #00ff66);
+    font-family: inherit;
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10001;
+    letter-spacing: 0.1em;
+    transition: transform 0.1s ease, color 0.2s ease;
+  }
+
+  #modal-close-btn:hover {
+    transform: scale(1.1);
+    color: #fff;
+  }
+
+  .modal-nav-btn {
+    background-color: var(--panel, #181a1b);
+    color: var(--accent, #00ff66);
+    border: 1px solid var(--border, #33373b);
+    padding: 0.6rem 1.2rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+  }
+
+  .modal-nav-btn:hover {
+    background-color: #222528;
+    border-color: var(--accent, #00ff66);
+    transform: translateY(-1px);
+    box-shadow: 3px 3px 0px var(--accent, #00ff66);
+  }
+
+  .modal-nav-btn:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--accent, #00ff66);
+  }
+
+</style>

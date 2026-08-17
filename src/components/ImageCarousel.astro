@@ -1,0 +1,51 @@
+---
+const { images = [], title = "SYS.IMG_VIEWER" } = Astro.props;
+---
+
+{images.length > 0 && (
+  <div class="hardware-carousel-wrapper">
+    <span class="panel-tag">/// {title}</span>
+    
+    <div class="carousel-nav-group">
+      <button class="carousel-btn prev-btn" aria-label="Previous image">&lt; PREV</button>
+      <button class="carousel-btn next-btn" aria-label="Next image">NEXT &gt;</button>
+    </div>
+
+    <div class="css-carousel">
+      {images.map((imgUrl) => (
+        <img src={imgUrl} alt="Gallery Image" class="carousel-image" loading="lazy" />
+      ))}
+    </div>
+  </div>
+)}
+
+<script>
+  document.querySelectorAll('.hardware-carousel-wrapper').forEach((wrapper) => {
+    
+    if (wrapper.dataset.carouselInit) return;
+    wrapper.dataset.carouselInit = 'true';
+
+    const carousel = wrapper.querySelector('.css-carousel');
+    const prevBtn = wrapper.querySelector('.prev-btn');
+    const nextBtn = wrapper.querySelector('.next-btn');
+
+    if (carousel && prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', () => {
+        if (carousel.scrollLeft <= 10) {
+          carousel.scrollTo({ left: carousel.scrollWidth, behavior: 'smooth' });
+        } else {
+          carousel.scrollBy({ left: -carousel.clientWidth * 0.75, behavior: 'smooth' });
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+        if (carousel.scrollLeft >= maxScrollLeft - 10) {
+          carousel.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          carousel.scrollBy({ left: carousel.clientWidth * 0.75, behavior: 'smooth' });
+        }
+      });
+    }
+  });
+</script>

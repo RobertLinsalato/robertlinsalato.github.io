@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import CatalogueItem from '../components/CatalogueItem.astro';
+
+// Fetch all projects, filter for 'audio', and sort newest to oldest
+const allProjects = await getCollection('projects');
+const audioProjects = allProjects
+  .filter((p) => p.data.categories.includes('audio'))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+  ---
+
+<Layout title="Robert Linsalato | Audio">
+  <main>
+    <Header activePage="audio" />
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// AUDIO EXPERIENCE </h2>
+        </div>
+        <div class="panel-body about-content">
+          <p>
+            Previously a part of APU's Media Production team, I worked as a Front of House (FOH) engineer, A2, and Studio Operator. 
+            While a student, I worked notable events such as FOH for APU's 2025 Spring Commencement, FOH for all morning chapels in both Fall 2025 and Spring 2026, and APU's 2026 Easter & Gospel Celebrations. 
+            Having worked over 80 university Chapels, 13 NCAA live sports events, and various miscellaneous productions, 
+            I am passionate about expanding my skill set and elevating the technical capabilities of any team I join.
+          </p>
+          <br />
+          <p>
+            Below are some of my notable audio projects and mix logs, showcasing my experience in live sound engineering, studio recording, and post-production.
+          </p>
+        </div>
+    </section>
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// AUDIO PROJECTS & MIX LOGS</h2>
+        <span class="count">{audioProjects.length} ITEMS</span>
+      </div>
+      <div class="panel-body">
+        {audioProjects.map((item) => (
+        <CatalogueItem 
+            date={item.data.date} 
+            title={item.data.title} 
+            href={item.data.externalUrl || `/projects/${item.id}`} 
+            badge={item.data.badge} 
+            categories={item.data.categories} 
+            tags={item.data.tags}
+          />
+        ))}
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .about-content { padding: 1.5rem; color: #c5c8c6; line-height: 1.6; }
+  .about-content p { font-size: 0.95rem; }
+</style>

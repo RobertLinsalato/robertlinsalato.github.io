@@ -1,0 +1,132 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CatalogueItem from '../components/CatalogueItem.astro';
+
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => 
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const gameProjects = sortedProjects
+  .filter((p) => p.data.categories.includes('game'))
+  .slice(0, 5);
+
+const audioProjects = sortedProjects
+  .filter((p) => p.data.categories.includes('audio'))
+  .slice(0, 5);
+
+const otherProjects = sortedProjects
+  .filter((p) => p.data.categories.includes('other'))
+  .slice(0, 5);
+---
+
+<Layout title="Robert Linsalato | Portfolio">
+  <main>
+
+    <Header activePage="home" />
+
+      <div class="panel-body badges-content">
+        <div class="badge-grid">
+          <a>
+            <img src="/images/badges/bestvw.gif" alt="best viewed" width="88" height="31" />
+          </a>
+          <a href="mailto:contact@robertlinsalato.com" target="_blank" rel="noopener noreferrer">
+            <img src="/images/badges/email.gif" alt="email me" width="88" height="31" />
+          </a>
+          <a href="/games">
+            <img src="/images/badges/games.gif" alt="games" width="88" height="31" />
+          </a>
+          <a href="https://www.blender.org/download" target="_blank" rel="noopener noreferrer">
+            <img src="/images/badges/blender.gif" alt="blender" width="88" height="31" />
+          </a>
+          <a href="https://thatfish4261.itch.io" target="_blank" rel="noopener noreferrer">
+            <img src="/images/badges/itchbadge.gif" alt="itch.io" width="88" height="31" />
+          </a>
+          <a>
+            <img src="/images/badges/img-broken.gif" alt="broken image badge" width="88" height="31" />
+          </a>
+        </div>
+      </div>
+
+    <section id="about" class="panel-container">
+      <div class="panel-header"><h2><a href="/about">/// ABOUT</a></h2></div>
+      <div class="panel-body bio-text">
+        <p>I am a game developer and audio engineer focused on building interactive systems, sound design, and live audio engineering. Read more <a href="/about">here</a>.</p>
+      </div>
+    </section>
+
+    <section id="games" class="panel-container">
+      <div class="panel-header">
+        <h2><a href="/games">/// GAMES</a></h2>
+        <span class="count">{gameProjects.length} ITEMS</span>
+      </div>
+      <div class="panel-body">
+        {gameProjects.map((item) => (
+        <CatalogueItem 
+          date={item.data.date} 
+          title={item.data.title} 
+          href={item.data.externalUrl || `/projects/${item.id}`} 
+          badge={item.data.badge} 
+          categories={item.data.categories}
+          tags={item.data.tags} 
+        />
+        ))}
+      </div>
+    </section>
+
+    <section id="audio" class="panel-container">
+      <div class="panel-header">
+        <h2><a href="/audio">/// AUDIO</a></h2>
+        <span class="count">{audioProjects.length} ITEMS</span>
+      </div>
+      <div class="panel-body">
+        {audioProjects.map((item) => (
+          <CatalogueItem 
+            date={item.data.date} 
+            title={item.data.title} 
+            href={item.data.externalUrl || `/projects/${item.id}`} 
+            badge={item.data.badge} 
+            categories={item.data.categories} 
+            tags={item.data.tags}
+          />
+        ))}
+      </div>
+    </section>
+
+    <section id="other" class="panel-container">
+      <div class="panel-header">
+        <h2><a href="/other">/// OTHER</a></h2>
+        <span class="count">{otherProjects.length} ITEMS</span>
+      </div>
+      <div class="panel-body">
+        {otherProjects.map((item) => (
+          <CatalogueItem 
+            date={item.data.date} 
+            title={item.data.title} 
+            href={item.data.externalUrl || `/projects/${item.id}`} 
+            badge={item.data.badge} 
+            categories={item.data.categories} 
+            tags={item.data.tags}
+          />
+        ))}
+      </div>
+    </section>
+
+  </main>
+</Layout>
+
+<style>
+  .bio-text p { color: #a1a1aa; font-size: 0.875rem; line-height: 1.6; padding: 0.5rem 0; }
+
+  /* --- 88x31 BADGE GRID --- */
+  .badges-content { padding: 1rem 1.5rem; }
+  .badge-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .badge-grid a { display: block; width: 88px; height: 31px; border: 1px solid #33373b; transition: border-color 0.2s ease, filter 0.2s ease; }
+  .badge-grid img { width: 100%; height: 100%; display: block; image-rendering: pixelated; filter: grayscale(60%) contrast(1.1); }
+  
+  .badge-grid a:hover { border-color: var(--accent); }
+  .badge-grid a:hover img { filter: grayscale(0%) contrast(1.1); }
+</style>

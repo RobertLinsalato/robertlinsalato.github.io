@@ -1,0 +1,161 @@
+---
+const { activePage } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="brand-container">
+    <a href="/"><img src="/images/profile.jpg" alt="Robert Linsalato" class="header-profile-img" /></a>
+    <div class="brand-text">
+      <h1 class="brand-name">ROBERT LINSALATO JR</h1>
+      <p class="brand-subtitle">Game Developer & Audio Engineer</p>
+    </div>
+  </div>
+
+  <nav class="nav-links">
+    <a href="/" class={activePage === 'home' ? 'active' : ''}>[HOME]</a>
+    <a href="/about" class={activePage === 'about' ? 'active' : ''}>[ABOUT]</a>
+    
+    <div class="dropdown">
+      <a 
+        href="/projects" 
+        class={activePage === 'projects' || activePage === 'games' || activePage === 'audio' || activePage === 'other' ? 'active' : ''}
+      >
+        [PROJECTS] ▼
+      </a>
+      
+      <div class="dropdown-content">
+        <a href="/projects" class="terminal-btn">> ALL_PROJECTS</a>
+        <a href="/games" class="terminal-btn">> GAMES</a>
+        <a href="/audio" class="terminal-btn">> AUDIO</a>
+        <a href="/other" class="terminal-btn">> OTHER</a>
+      </div>
+    </div>
+
+    <a href="/3d-showcase" class={activePage === '3d-showcase' ? 'active' : ''}>[3D SHOWCASE]</a>
+    <a href="/contact" class={activePage === 'contact' ? 'active' : ''}>[CONTACT]</a>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  @media (min-width: 600px) {
+    .site-header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .brand-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .header-profile-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    background-color: var(--panel);
+    filter: grayscale(75%) contrast(1.1);
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #e4e4e7;
+    margin: 0;
+    letter-spacing: 0.08em;
+  }
+
+  .brand-subtitle {
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .nav-links a {
+    font-size: 0.85rem;
+    color: #a1a1aa;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--accent);
+  }
+
+  /* --- DROPDOWN CONTAINER --- */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px; /* The invisible hover bridge! */
+  }
+
+  /* --- DROPDOWN MENU PANEL --- */
+  .dropdown-content {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 100%; /* Positions it directly below the button */
+    left: 0;
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    z-index: 1000; /* Ensures it drops over the page content */
+    min-width: 180px;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
+    flex-direction: column;
+    /* margin-top removed so the invisible bridge works perfectly */
+  }
+
+  /* Show the dropdown when hovering over the wrapper */
+  .dropdown:hover .dropdown-content {
+    display: flex;
+  }
+
+  /* --- DROPDOWN ITEM TWEAKS --- */
+  /* Overrides standard terminal-btn styles so they don't jump around inside the menu */
+  .dropdown-content .terminal-btn {
+    border: none;
+    border-bottom: 1px dashed var(--border);
+    box-shadow: none; 
+    justify-content: flex-start; /* Aligns text to the left */
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+  }
+
+  /* Remove the dashed border from the last item */
+  .dropdown-content .terminal-btn:last-child {
+    border-bottom: none;
+  }
+
+  /* Custom hover state for inner dropdown buttons */
+  .dropdown-content .terminal-btn:hover {
+    transform: none; /* Prevents the 1px jump */
+    background-color: #222528;
+  }
+</style>

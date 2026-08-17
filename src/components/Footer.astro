@@ -1,0 +1,64 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <p class="copyright">© {currentYear} ROBERT LINSALATO</p>
+    
+    <div class="footer-links">
+      <a href="https://github.com/robertlinsalato/robertlinsalato.github.io" target="_blank" rel="noopener noreferrer">[GITHUB]</a>
+      <a href="/contact">[CONTACT]</a>
+      <span class="system-status">SYS_ONLINE</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+  margin-top: auto; 
+  padding-top: 1rem;
+  border-top: 1px solid var(--border, #33373b);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  color: #71717a;
+  padding-bottom: 1rem;
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .copyright {
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .footer-links a {
+    color: #71717a;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .footer-links a:hover {
+    color: #38bdf8;
+  }
+
+  .system-status {
+    color: var(--accent, #34d399);
+    border: 1px solid #065f46;
+    padding: 0.1rem 0.3rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+  }
+</style>

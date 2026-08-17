@@ -1,0 +1,370 @@
+@import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&display=swap');
+
+/* --- DEFAULT THEME (DARK / RETRO TERMINAL) --- */
+:root {
+  --bg: #111314;
+  --panel: #181a1b;
+  --border: #33373b;
+  --text: #c5c8c6;
+  --accent: rgb(52, 211, 153);
+  --alert: rgb(248, 113, 113);
+  --link: #38bdf8;
+  --link-visited: #129eda;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  
+  /* Added variables to replace hardcoded hex values */
+  --text-heading: #f4f4f5;
+  --text-muted: #71717a;
+  --panel-header: #222528;
+  --modal-bg: rgba(18, 20, 21, 0.95);
+}
+
+/* --- SYSTEM LIGHT THEME OVERRIDE --- */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #e4e4e7;
+    --panel: #ffffff;
+    --border: #a1a1aa;
+    --text: #27272a;
+    --accent: #059669; /* Darker, high-contrast green */
+    --alert: #b91c1c;  /* Deeper, high-contrast red */
+    --link: #0284c7;   /* Darker blue */
+    --link-visited: #0369a1;
+    
+    --text-heading: #18181b;
+    --text-muted: #52525b;
+    --panel-header: #f4f4f5; /* Light grey for panel headers */
+    --modal-bg: rgba(228, 228, 231, 0.95); /* Light translucent backdrop */
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 2rem;
+}
+
+a:link {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:visited {
+  color: var(--link-visited);
+  text-decoration: none;
+}
+
+.site-container { 
+  max-width: 800px; 
+  margin: 0 auto; 
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 4rem);
+}
+
+.markdown-content h1, 
+.markdown-content h2, 
+.markdown-content h3 {
+  color: var(--text-heading);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content p {
+  margin-bottom: 1rem;
+}
+
+.markdown-content a {
+  color: var(--link);
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  color: var(--text-heading);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* --- RETRO NEW ALERT TAG --- */
+.new-alert {
+  color: var(--alert);
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  margin-right: 0.5rem;
+  animation: retro-blink 1.5s step-end infinite;
+}
+
+@keyframes retro-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; } 
+}
+
+/* --- Custom Audio Player Wrapper --- */
+.hardware-panel {
+  border: 1px solid var(--border);
+  background-color: var(--panel);
+  padding: 1.5rem 1rem 1rem 1rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.hardware-panel .panel-tag {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: var(--bg);
+  color: var(--accent);
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--border);
+}
+
+.hardware-panel .panel-alert {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: var(--bg);
+  color: var(--alert);
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--border);
+}
+
+[data-waveform-player] {
+  display: block;
+  width: 100%;
+  font-family: var(--font-mono) !important;
+  color: var(--text);
+}
+
+/* --- RETRO TERMINAL BUTTON WITH VERTICAL CENTERING --- */
+.terminal-btn {
+    display: inline-flex;
+    align-items: center; 
+    justify-content: center; 
+    gap: 0.75rem; 
+    background-color: var(--panel);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1.2rem 0.7rem 1.2rem; 
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    line-height: normal; 
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+  }
+
+  .terminal-btn img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    display: block;
+  }
+
+  .terminal-btn:hover {
+    border-color: var(--accent);
+    background-color: var(--panel-header);
+    transform: translateY(-1px);
+    box-shadow: 3px 3px 0px var(--accent);
+  }
+
+  .terminal-btn:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--accent);
+  }
+
+  .terminal-btn span {
+    position: relative;
+    top: 1px;
+  }
+
+  /* --- GLOBAL IMAGE MODAL --- */
+  #global-image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--modal-bg);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+  }
+
+  #global-image-modal.modal-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* --- RETRO HARDWARE CAROUSEL WRAPPER --- */
+  .hardware-carousel-wrapper {
+    border: 1px solid var(--border);
+    background-color: var(--panel);
+    padding: 2.2rem 1rem 1rem 1rem; 
+    margin: 1rem 0 2rem 0;
+    position: relative;
+  }
+
+  .hardware-carousel-wrapper .panel-tag {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background-color: var(--bg);
+    color: var(--accent);
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--border);
+    z-index: 10;
+  }
+
+  /* --- BORDER-ALIGNED NAVIGATION BUTTONS --- */
+  .carousel-nav-group {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    display: flex;
+    gap: 0.25rem;
+    z-index: 10;
+  }
+
+  .carousel-btn {
+    background-color: var(--bg);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 0 0.5rem;
+    height: 20px;
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .carousel-btn:hover {
+    background-color: var(--panel-header);
+    border-color: var(--accent);
+  }
+
+  /* --- NATIVE CSS SLIDER STYLES --- */
+  .css-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+    align-items: center;
+    width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg);
+  }
+
+  .css-carousel::-webkit-scrollbar { height: 6px; }
+  .css-carousel::-webkit-scrollbar-track {
+    background: var(--bg);
+    border: 1px solid var(--border);
+  }
+  .css-carousel::-webkit-scrollbar-thumb { background: var(--accent); }
+
+  .css-carousel .carousel-image {
+    flex: 0 0 auto; 
+    scroll-snap-align: center;
+    border: 1px solid var(--border);
+    filter: contrast(1.1); 
+    max-height: 400px; 
+    width: auto; 
+    max-width: 100%; 
+    object-fit: contain;
+    cursor: zoom-in; 
+  }
+
+  /* --- STRUCTURAL PANELS --- */
+  .panel-container { 
+    background: var(--panel); 
+    border: 1px solid var(--border); 
+    margin-bottom: 2rem; 
+  }
+
+  .panel-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    background: var(--panel-header); 
+    padding: 0.6rem 1rem; 
+    border-bottom: 1px solid var(--border); 
+  }
+
+  .panel-header h2 { 
+    font-size: 0.9rem; 
+    color: var(--text-heading); 
+    margin: 0; 
+    letter-spacing: 0.08em; 
+  }
+
+  .panel-header h2 a {
+    color: inherit;
+  }
+
+  .panel-body { 
+    padding: 0.5rem 1rem; 
+  }
+
+  .count { 
+    font-size: 0.75rem; 
+    color: var(--text-muted); 
+  }
+
+  /* --- SIDE-BY-SIDE EMBED WRAPPER --- */
+  .embed-row {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 1.5rem 0;
+  }
+
+  .embed-row .instagram-media,
+  .embed-row iframe {
+    max-width: 320px !important; 
+    min-width: 300px !important;
+    width: 100% !important; 
+    margin: 0 !important; 
+    flex: 1 1 300px !important;
+  }

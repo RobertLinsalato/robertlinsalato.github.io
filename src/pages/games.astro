@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import CatalogueItem from '../components/CatalogueItem.astro';
+
+const allProjects = await getCollection('projects');
+const gameProjects = allProjects
+  .filter((p) => p.data.categories.includes('game'))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+---
+
+<Layout title="Robert Linsalato | Games">
+  <main>
+    <Header activePage="games" />
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// GAME DEVELOPMENT </h2>
+        </div>
+        <div class="panel-body about-content">
+          <p>
+            I've been playing games for as long as I can remember, but I didn't start making them until late high school where I was heavily into 3D Asset Creation, Animation and Game Development in Unity. Since then, I've made many games and game prototypes through college, some of which are available to play on my <a href="https://thatfish4261.itch.io" target="_blank" class="link">Itch.io</a> page. 
+          </p>
+        </div>
+    </section>
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// GAME PROJECTS</h2>
+        <span class="count">{gameProjects.length} ITEMS</span>
+      </div>
+      <div class="panel-body">
+        {gameProjects.map((item) => (
+          <CatalogueItem 
+            date={item.data.date} 
+            title={item.data.title} 
+            href={item.data.externalUrl || `/projects/${item.id}`} 
+            badge={item.data.badge} 
+            categories={item.data.categories}
+            tags={item.data.tags} 
+          />
+        ))}
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .contact-content { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  
+  .contact-row { display: flex; align-items: baseline; font-size: 0.95rem; }
+  .label { color: #71717a; width: 120px; font-weight: 600; }
+  .value { color: #e4e4e7; }
+  
+  .link { text-decoration: none; transition: color 0.15s ease; }
+  .link:hover { color: var(--accent); text-decoration: underline; }
+  
+  .pdf-container { padding-bottom: 1rem; }
+  .pdf-embed { border: 1px solid #33373b; background-color: var(--bg); display: block; }
+
+  .about-content { padding: 1.5rem; color: #c5c8c6; line-height: 1.6; }
+  .about-content p { font-size: 0.95rem; }
+</style>

@@ -1,0 +1,83 @@
+---
+interface Props {
+  date: string;
+  title: string;
+  href: string;
+  badge?: string;
+  categories: Array<'game' | 'audio' | 'other'>;
+  description?: string;
+  tags?: string[];
+}
+
+const { date, title, href, badge, categories, description, tags = [] } = Astro.props;
+
+// Calculate if the project is less than 30 days old
+const isNew = (new Date().getTime() - new Date(date).getTime()) <= (30 * 24 * 60 * 60 * 1000);
+---
+
+<div class="catalogue-row">
+  <div class="main-info">
+    {/* Formats the date to look like: [15 Aug 2026] */}
+    <span class="date">[{new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}]</span>
+    
+    {/* Glowing NEW tag triggers if the project is under 30 days old */}
+    {isNew && <span class="new-alert">!!! NEW !!!</span>}
+    
+    {badge && <span class="badge">/// {badge.toUpperCase()} ///</span>}
+    
+    <a href={href} class="title-link">{title}</a>
+
+    {tags.length > 0 && (
+      <div class="tags-container">
+        {tags.map(tag => (
+          <span class="tech-tag">[{tag.toUpperCase()}]</span>
+        ))}
+      </div>
+    )}
+
+    <!-- Loop through categories and wrap them so they stay aligned to the right -->
+    <div class="categories-wrapper">
+      {categories.map(cat => (
+        <span class={`category-tag category-${cat}`}>{cat}</span>
+      ))}
+    </div>
+  </div>
+  
+  {description && <p class="description">{description}</p>}
+</div>
+
+<style>
+  .catalogue-row { padding: 0.6rem 0; border-bottom: 1px dashed var(--border); font-size: 0.9rem; }
+  .catalogue-row:last-child { border-bottom: none; }
+  .main-info { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+  .date { color: #71717a; font-weight: 500; }
+  
+  /* --- RETRO GLOW ALERT TAG --- */
+  .new-alert {
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    /* Removed step-end and opacity, now uses a smooth 2-second color pulse */
+    animation: retro-pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes retro-pulse {
+    0%, 100% { color: var(--alert); } /* Your bright red variable */
+    50% { color: #7f1d1d; } /* A deep, dark crimson red */
+  }
+
+  .badge { color: var(--accent); font-weight: bold; font-size: 0.8rem; }
+  .title-link { color: #e4e4e7; text-decoration: none; font-weight: 600; transition: color 0.15s ease; }
+  .title-link:hover { color: #38bdf8; text-decoration: underline; }
+  
+  .tags-container { display: flex; gap: 0.4rem; margin-left: 0.5rem; }
+  .tech-tag { color: #71717a; font-size: 0.7rem; font-family: var(--font-mono); letter-spacing: 0.05em;}
+  .tech-tag:hover { color: #a1a1aa; }
+
+  .categories-wrapper { margin-left: auto; display: flex; gap: 0.4rem; }
+
+  .category-tag { font-size: 0.7rem; padding: 0.1rem 0.4rem; border: 1px solid #444; text-transform: uppercase; }
+  .category-game { color: #6aaa59; border-color: #36522e; }
+  .category-audio { color: #fbbf24; border-color: #78350f; }
+  .category-other { color: #38bdf8; border-color: #0369a1; }
+  .description { color: #a1a1aa; font-size: 0.825rem; margin-top: 0.25rem; padding-left: 1rem; border-left: 2px solid #27272a; }
+</style>

@@ -1,0 +1,247 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import ImageCarousel from '../components/ImageCarousel.astro';
+import Parser from 'rss-parser';
+
+const parser = new Parser();
+
+type FilmLog = {
+  title?: string;
+  link?: string;
+  pubDate?: string;
+};
+
+let filmLogs: FilmLog[] = [];
+try {
+  const feed = await parser.parseURL('https://letterboxd.com/RobertLinsalato/rss/');
+  filmLogs = feed.items.slice(0, 5); 
+} catch (error) {
+  console.error("Failed to fetch Letterboxd RSS:", error);
+}
+
+const aboutGallery = [
+  "/images/about/Robbie Ser.png",
+  "/images/about/grad shower.jpg",
+  "/images/about/employee of month.jpg",
+  "images/about/ontario-tSwift.jpg",
+  "/images/about/showcase1.jpg",
+  "/images/about/comencement.jpg",
+  "/images/about/working-1.png",
+  "/images/about/showcase2.jpg",
+  "/images/about/audio board.jpg",
+  "/images/about/Robbie Fun.png",
+];
+---
+
+<Layout title="Robert Linsalato | About">
+  <main>
+    <Header activePage="about" />
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// SYS.INFO+BIO</h2>
+      </div>
+      
+      <div class="panel-body about-content">
+        
+        <div class="bio-section">
+          <img src="/images/profile.jpg" alt="Robert Linsalato" class="bio-photo" />
+          
+          <div class="bio-text">
+            <p>
+              <img src="/images/about/hai.gif" height="16" /> Heya! 
+            </p>
+            <br />
+            <p>
+              I'm Robert (or Robbie) and I'm a game developer, audio engineer, and recent graduate focused on 3D Art for games and Live Sound Reinforcement. 
+              My work spans from rapid game prototyping and custom Unity tools to live Front of House mix engineering and video game sound design.
+            </p>
+          </div>
+        </div>
+
+        <div class="bio-section">
+          <div class="bio-text">
+            <p>
+              Outside of work, I love racing, specifically I love to watch any and all forms of motor racing (you name it, I've watched it), I'm a diehard Padres fan, I love to ride my Onewheel, and explore the outdoors. 
+              I'm a huge tech nerd and gamer at heart who's currently obsessed with Forza Horizon 6.
+              I'm always looking to learn and grow wherever I can (which is partially why <a href="/projects/other/website" target="_blank" rel="noopener noreferrer">I self made this website :)</a>).
+              If you'd like to work with me, please <a href="/contact" target="_blank" rel="noopener noreferrer">reach out</a>.
+            </p>
+          </div>
+        </div>
+
+        <ImageCarousel title="SYS.IMG_VIEWER" images={aboutGallery} />
+
+        <div class="tech-grid">
+          <div class="tech-column">
+            <h3>> GAME DEV & 3D ART </h3>
+            <ul>
+              <li>Unity 3D / 2D</li>
+              <li>Unreal Engine 4/5</li>
+              <li>C# Scripting</li>
+              <li>Perforce (VCS)</li>
+              <li>Blender</li>
+              <li>Maya</li>
+              <li>Retopology</li>
+              <li>UV Mapping</li>
+              <li>Rigging</li>
+              <li>Hard & Soft Surface Modeling</li>
+              <li>Character Animation</li>
+            </ul>
+          </div>
+
+          <div class="tech-column">
+            <h3>> AUDIO ENGINEERING</h3>
+            <ul>
+              <li>Front of House Mixing</li>
+              <li>Live Venue Routing</li>
+              <li>Sound Design</li>
+              <li>Dante Networking</li>
+              <li>Yamaha CL/QL</li>
+              <li>Broadcast Mixing</li>
+              <li>QLab</li>
+              <li>Cable Management</li>
+              <li>Cable Wrapping</li>
+              <li>Equipment Maintenance</li>
+            </ul>
+          </div>
+          
+          <div class="tech-column">
+            <h3>> OTHER </h3>
+            <ul>
+              <li>React & Vite</li>
+              <li>Astro</li>
+              <li>Three.js / React Three Fiber</li>
+              <li>HTML / CSS / JS</li>
+            </ul>
+          </div>
+        </div> 
+
+        <div class="experience-section">
+          <h3>> WORK_HISTORY</h3>
+          
+          <div class="job-list">
+            
+            <div class="job-item">
+              <div class="job-header">
+                <span class="job-title">Freelance Audio Engineer</span>
+                <span class="job-date">[MAY 2025 - PRESENT]</span>
+              </div>
+              <div class="job-employer">Self-Employed / Independent</div>
+              <ul class="job-responsibilities">
+                <li>Manages Front of House live audio mixes and high-fidelity routing configurations for venue deployments.</li>
+                <li>Routinely lifts/moves ~75lbs of equipment during setup and teardown.</li>
+              </ul>
+            </div>
+
+            <div class="job-item">
+              <div class="job-header">
+                <span class="job-title">FOH, Broadcast Engineer, A2, Camera Operator</span>
+                <span class="job-date">[AUG 2024 - MAY 2026]</span>
+              </div>
+              <div class="job-employer">Azusa Pacific University - Media Production Crew</div>
+              <ul class="job-responsibilities">
+                <li>Worked over 123 weekly worship services, 73 of which I lead the audio team as FOH.</li>
+                <li>Worked 13 NCAA live sports events as Camera Operator.</li>
+                <li>Broadcast Engineer for the NCATA National Championship Quarterfinals, Finals, and Event Finals, mixing for ESPN+ Broadcasts.</li>
+                <li>Profficiant in Yamaha CL/QL console operation and troubleshooting & Dante Networking.</li>
+              </ul>
+            </div>
+
+            <div class="job-item">
+              <div class="job-header">
+                <span class="job-title">EDC Student Worker</span>
+                <span class="job-date">[AUG 2023 - MAY 2026]</span>
+              </div>
+              <div class="job-employer">Azusa Pacific University - Cinematic Arts Equipment Distribution Center</div>
+              <ul class="job-responsibilities">
+                <li>Created student film equipment reservations, identified and pulled gear to create unique equipment reservation, provided support to students while they checked their equipment orders, and returned gear from reservations, checking each piece carefully for damage, malfunction, or missing elements</li>
+                <li>Assisted the Technical Manager in the repair and maintenance of gear at the EDC</li>
+                <li>Filmed Behind the Scenes footage of student films for use in social media and department advertising</li>
+              </ul>
+            </div>
+
+            <div class="job-item">
+              <div class="job-header">
+                <span class="job-title">POOL LIFEGUARD</span>
+                <span class="job-date">[MAY 2022 - AUG 2023]</span>
+              </div>
+              <div class="job-employer">Pechanga Resort & Casino - The Cove</div>
+            </div>
+
+          </div>
+        </div>
+        
+      </div>
+    </section>
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// SYS.LOG_CINEMA</h2>
+      </div>
+      <div class="panel-body about-content">
+        <p>
+          Below are some of my recent <a href="https://letterboxd.com/robertlinsalato/" target="_blank" rel="noopener noreferrer">Letterboxd</a> Reviews
+        </p>
+      </div>
+      <div class="panel-body film-log-content">
+        {filmLogs.length > 0 ? (
+          <ul class="rss-list">
+            {filmLogs.map((log) => (
+              <li>
+                <a href={log.link} target="_blank" rel="noopener noreferrer">
+                  <span class="log-title">> {log.title}</span>
+                  <span class="log-date">[{log.pubDate ? new Date(log.pubDate).toLocaleDateString() : 'N/A'}]</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="error-text">ERR: UNABLE_TO_CONNECT_TO_FEED</p>
+        )}
+      </div>
+    </section>
+
+  </main>
+</Layout>
+
+<style>
+  .about-content { padding: 1.5rem; color: #c5c8c6; line-height: 1.6; }
+  
+  .bio-section { display: flex; gap: 1.5rem; align-items: flex-start; margin-bottom: 2rem; }
+  .bio-photo { width: 175px; height: auto; border: 1px solid var(--border); padding: 0.25rem; background-color: var(--panel); flex-shrink: 0; filter: grayscale(75%) contrast(1.1); }
+  .bio-text p { margin: 0; font-size: 0.95rem; }
+  
+  @media (max-width: 600px) {
+    .bio-section { flex-direction: column; }
+    .bio-photo { width: 100%; max-width: 250px; }
+  }
+
+  .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+  .tech-column h3 { color: var(--accent); font-size: 0.85rem; margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+  .tech-column ul { list-style: none; padding: 0; margin: 0; }
+  .tech-column li { font-size: 0.85rem; color: #a1a1aa; margin-bottom: 0.4rem; }
+  .tech-column li::before { content: "- "; color: #555; }
+
+  .experience-section { margin-top: 3rem; border-top: 1px dashed var(--border); padding-top: 2rem; }
+  .experience-section h3 { color: var(--accent); font-size: 0.85rem; margin-bottom: 1.5rem; letter-spacing: 0.05em; }
+  .job-list { display: flex; flex-direction: column; gap: 2rem; }
+  .job-item { border-left: 2px solid #33373b; padding-left: 1.25rem; position: relative; }
+  .job-item::before { content: ""; position: absolute; left: -4px; top: 6px; width: 6px; height: 6px; background-color: var(--accent); }
+  .job-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.25rem; flex-wrap: wrap; gap: 0.5rem; }
+  .job-title { font-size: 0.95rem; font-weight: bold; color: #e4e4e7; }
+  .job-date { font-size: 0.75rem; color: #71717a; }
+  .job-employer { font-size: 0.8rem; color: var(--accent); margin-bottom: 1rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  
+  .job-responsibilities { list-style: none; padding: 0; margin: 0; }
+  .job-responsibilities li { font-size: 0.85rem; color: #a1a1aa; margin-bottom: 0.5rem; line-height: 1.5; }
+  .job-responsibilities li::before { content: "> "; color: #555; }
+
+  .rss-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+  .rss-list li a { display: flex; justify-content: space-between; align-items: center; text-decoration: none; background-color: var(--bg); border: 1px solid var(--border); padding: 0.75rem 1rem; color: #c5c8c6; font-size: 0.85rem; transition: border-color 0.2s ease, color 0.2s ease; }
+  .log-title { font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 1rem; }
+  .log-date { color: #71717a; font-size: 0.75rem; flex-shrink: 0; }
+  .rss-list li a:hover { border-color: var(--accent); color: var(--accent); }
+  .error-text { color: #ef4444; font-weight: bold; letter-spacing: 0.05em; }
+</style>

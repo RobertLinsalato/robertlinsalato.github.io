@@ -1,0 +1,132 @@
+---
+interface Props {
+  beforeImage: string;
+  afterImage: string;
+  beforeAlt?: string;
+  afterAlt?: string;
+}
+
+const { 
+  beforeImage, 
+  afterImage, 
+  beforeAlt = "Before image", 
+  afterAlt = "After image" 
+} = Astro.props;
+---
+
+{/* Our custom Web Component */}
+<compare-slider>
+  <div class="compare-wrapper" style="--pos: 50%;">
+    {/* Base Image (After) */}
+    <img src={afterImage} alt={afterAlt} class="img-base" />
+    
+    {/* Overlay Image (Before) - Clipped by CSS */}
+    <img src={beforeImage} alt={beforeAlt} class="img-overlay" />
+    
+    {/* The Native HTML Range Slider - Invisible but interactive */}
+    <input type="range" min="0" max="100" value="50" class="slider" aria-label="Percentage of before photo shown" />
+    
+    {/* The Retro Visual Handle */}
+    <div class="slider-handle" aria-hidden="true">
+      <div class="handle-line"></div>
+      <div class="handle-button">&lt;|&gt;</div>
+    </div>
+  </div>
+</compare-slider>
+
+<style>
+  /* --- WRAPPER --- */
+  .compare-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9; /* Adjust or remove if you want it to conform perfectly to image size */
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background-color: var(--panel);
+  }
+
+  /* --- IMAGES --- */
+  .compare-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none; /* Let the slider receive all clicks */
+  }
+
+  /* The magic trick: clip the top image based on the --pos CSS variable */
+  .img-overlay {
+    clip-path: polygon(0 0, var(--pos) 0, var(--pos) 100%, 0 100%);
+  }
+
+  /* --- THE INVISIBLE RANGE INPUT --- */
+  .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; 
+    cursor: ew-resize;
+    z-index: 20; /* Sits above everything to catch clicks/drags */
+    margin: 0;
+  }
+
+  /* --- THE VISUAL RETRO HANDLE --- */
+  .slider-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos);
+    transform: translateX(-50%);
+    pointer-events: none; /* Let the invisible input handle the interactions */
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .handle-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: var(--accent);
+  }
+
+  .handle-button {
+    position: relative;
+    background-color: var(--panel);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.25rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+  }
+</style>
+
+<script>
+  // Defining a custom element ensures the JS fires perfectly during Astro View Transitions
+  class CompareSlider extends HTMLElement {
+    connectedCallback() {
+      const wrapper = this.querySelector('.compare-wrapper') as HTMLElement;
+      const slider = this.querySelector('.slider') as HTMLInputElement;
+
+      if (!wrapper || !slider) return;
+
+      // Update the CSS variable every time the slider moves
+      slider.addEventListener('input', (e) => {
+        const target = e.target as HTMLInputElement;
+        wrapper.style.setProperty('--pos', `${target.value}%`);
+      });
+    }
+  }
+
+  customElements.define('compare-slider', CompareSlider);
+</script>

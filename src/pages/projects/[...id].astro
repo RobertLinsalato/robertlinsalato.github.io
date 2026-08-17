@@ -1,0 +1,151 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import ImageCarousel from '../../components/ImageCarousel.astro'; 
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(project => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+// Calculate if the project is less than 30 days old (TypeScript safe)
+const isNew = (new Date().getTime() - new Date(project.data.date).getTime()) <= (30 * 24 * 60 * 60 * 1000);
+---
+
+<Layout title={`Robert Linsalato | ${project.data.title}`}>
+  <Header activePage="projects" />
+  
+  <article class="panel-container">
+    <div class="panel-header">
+      <h2>
+        {isNew && <span class="new-alert">!!! NEW !!!</span>}
+        /// {project.data.title.toUpperCase()}
+      </h2>
+      <span class="date">[{project.data.date}]</span>
+    </div>
+    
+    <div class="panel-body project-content markdown-content">
+      
+      {project.data.description && (
+        <div class="hardware-carousel-wrapper" style="margin-top: 0;">
+            <span class="panel-tag">/// TAGLINE</span>
+            <p>{project.data.description}</p>
+        </div>
+      )}
+
+      {project.data.gallery && project.data.gallery.length > 0 && (
+        <ImageCarousel 
+          title="SYS.PROJECT_GALLERY" 
+          images={project.data.gallery} 
+        />
+      )}
+
+      <Content />
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .date { 
+    font-size: 0.75rem; 
+    color: #71717a; 
+  }
+
+  /* --- RETRO GLOW ALERT TAG --- */
+  .new-alert {
+    color: var(--alert);
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    margin-right: 0.5rem;
+    animation: retro-pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes retro-pulse {
+    0%, 100% { color: var(--alert); }
+    50% { color: #7f1d1d; } 
+  }
+  
+  .project-content { 
+    padding: 1.5rem; 
+    color: #c5c8c6; 
+    line-height: 1.6; 
+  }
+
+  .iframe-container {
+    padding-bottom: 1.5rem;
+  }
+
+  .iframe-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .iframe-wrapper :global(iframe) {
+    max-width: 100%;
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+  }
+
+  .hr.smallBreak{
+    border-top: 1px dashed red;
+  }
+
+/* --- RETRO TERMINAL TABLES --- */
+  .markdown-content :global(table) {
+    max-width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    background-color: var(--bg);
+  }
+
+  .markdown-content :global(th),
+  .markdown-content :global(td) {
+    border: 1px dashed var(--border);
+    padding: 0.5rem 1rem;
+    text-align: left;
+  }
+
+  .markdown-content :global(th) {
+    background-color: var(--panel);
+    color: var(--accent);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--border);
+  }
+
+  .markdown-content :global(.meta-list) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+    font-family: inherit;
+  }
+
+  .markdown-content :global(.meta-item) {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .markdown-content :global(.meta-key) {
+    color: var(--accent);
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    min-width: 120px; 
+  }
+
+  .markdown-content :global(.meta-val) {
+    color: #c5c8c6;
+  }
+</style>

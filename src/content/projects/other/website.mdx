@@ -1,0 +1,127 @@
+---
+title: "Website Refresh"
+date: "2026-08-20"
+categories: ["other"]
+tags: ["html", "css", "javascript", "astro"]
+description: "A full reimagining of my personal website; self-hosted and self-made."
+---
+
+import ImageCompare from '../../../components/ImageCompare.astro';
+
+# /// BACKGROUND
+In 2025, I created a basic website through Google Sites, hosting it on the current domain, <a href="https://robertlinsalato.com" target="_blank" rel="noopener">robertlinsalato.com</a>.
+Before graduating in Spring 2026, I wanted to refresh the site, and it went... well, it wasn't very good.
+I tried to use the Gatsby framework built on top of the React JS library—a framework I barely knew.
+I was more than comfortable working with React components, but Gatsby was way too bloated and sluggish for the style of website I wanted to create.
+I kept running into more roadblocks than I knew how to handle, and it became more trouble than it was worth.
+The problem was that I didn't want a generic Wix, Squarespace, or other "plug-and-play" site; I wanted something that would genuinely stand out.
+Eventually, I put it on hold because I simply lost the drive to continue.
+
+During the summer of 2026, I came across <a href="https://mikeklubnika.com" target="_blank" rel="noopener">mikeklubnika.com</a> and <a href="https://wriks.motorcycles" target="_blank" rel="noopener">wriks.motorcycles</a> while researching the developer behind a game I wanted to purchase.
+Both sites (created by the same person) gave me the inspiration I needed to build a brand-new portfolio to showcase my work.
+
+While web design had always been an interest, it was never a professional career path I intended to pursue. Still, I wanted to build something I could show off without feeling like it fell short of my personal standards.
+So after a day of researching different frameworks, weighing the pros and cons, and wondering if I could pull it off, I got to work.
+
+# /// HOW
+After scouring the documentation, I decided to make the switch to the <a href="https://astro.build" target="_blank" rel="noopener">Astro Framework</a>.
+
+## /// Why Astro?
+I chose Astro mainly for its mix of a blazing-fast backend, its "Island Architecture" (which is perfect for generating dedicated project pages), built-in React support, and the freedom to write plain HTML (*THANK YOU ASTRO*).
+If you visit the two inspiration sites, you can clearly see where the aesthetic originated. Astro made it incredibly straightforward to recreate that terminal feel with modern, efficient code.
+
+## /// Projects
+I wanted the entire site to revolve around the different projects I've been a part of. Step one was building a dynamic system that lets me publish a new project simply by creating a markdown file.
+The old site's project archive was clunky and difficult to navigate, largely because I was adapting a template that wasn't designed for a game portfolio.
+The new approach solved that, keeping things focused, clean, and organized.
+
+## /// Custom Components & Embeds
+A major priority was building reusable components that could maintain the site's cohesive technical style.
+While I aimed to write as much native Astro as possible, certain elements benefited from React integrations:
+* **Audio Player:** It was much faster and more reliable to use React for the audio player component, leveraging a well-documented React plugin to handle JS playback.
+* **Image Comparison:** Built entirely as a zero-dependency native Astro component.
+* **Image Carousel:** One piece I am especially proud of (despite its relative simplicity) is the custom carousel component, designed to make browsing project media seamless.
+* **3D Showcase:** Powered by React Three Fiber (R3F) to render 3D assets directly in WebGL, making real-time asset previews lightweight and easy to embed.
+
+## /// Style & CSS
+On the old site, I was working with styles I didn't fully understand.
+With the rewrite, the biggest shift was making the site dark mode by default, leaning into the feel of mid-2000s Flash game portals like Kongregate.
+Keeping the visual design simple, readable, and consistent became much easier once I centralized everything into a single global CSS file with custom properties.
+Everything from the accent colors to the hardware panels now works together seamlessly.
+
+## /// Old vs. New
+Below is a quick comparison between the two versions:
+
+|       Context        |  Old  |  New  |
+|:---------------------|:-----:|:-----:|
+|Framework             |Gatsby | Astro |
+|Project Size (MB)     |<span style="color: var(--alert)">985 MB</span>|629 MB|
+|Page Load Speed (avg) |<span style="color: var(--alert)">604 ms</span>|18.7 ms|
+|Build Time (sec)      |<span style="color: var(--alert)">1m 35s</span>|10.39 s|
+
+# /// FINAL THOUGHTS
+I am extremely proud of the new site, not just because it runs circles around the old version in speed, but because it represents over two weeks of prototyping, sharpening my JavaScript skills, and mastering an entirely new framework.
+If you are interested, you can view the complete source code on my GitHub <a href="https://github.com/RobertLinsalato/robertlinsalato.github.io" target="_blank" rel="noopener">here</a>.
+
+Thanks for taking the time to read through!
+
+<hr class="smallBreak" />
+
+# /// BEFORE & AFTER
+
+<div class="hardware-panel">
+  <span class="panel-alert">READ_ME</span>
+  The left images represent the old site; the right images show the new redesign.
+</div>
+
+## /// Home Page
+<ImageCompare 
+  beforeImage="/images/other/website/website-old-home.jpg"
+  afterImage="/images/other/website/website-new-home.png"
+  beforeAlt="Home page of the old website"
+  afterAlt="Home page of the new website"
+/>
+
+<br />
+<hr class="smallBreak" />
+  
+## /// About Page
+<ImageCompare 
+  beforeImage="/images/other/website/website-old-about.jpg"
+  afterImage="/images/other/website/website-new-about.jpg"
+  beforeAlt="About page of the old website"
+  afterAlt="About page of the new website"
+/>
+
+<br />
+<hr class="smallBreak" />
+  
+## /// Games Page
+<ImageCompare 
+  beforeImage="/images/other/website/website-old-games.jpg"
+  afterImage="/images/other/website/website-new-games.png"
+  beforeAlt="Games page of the old website"
+  afterAlt="Games page of the new website"
+/>
+
+<br />
+<hr class="smallBreak" />
+
+## /// *Dumpster Fire* Page
+<ImageCompare 
+  beforeImage="/images/other/website/website-old-df.png"
+  afterImage="/images/other/website/website-new-df.png"
+  beforeAlt="Dumpster Fire project page on the old website"
+  afterAlt="Dumpster Fire project page on the new website"
+/>
+
+<br />
+<hr class="smallBreak" />
+
+## /// Contact Page
+<ImageCompare 
+  beforeImage="/images/other/website/website-old-contact.jpg"
+  afterImage="/images/other/website/website-new-contact.jpg"
+  beforeAlt="Contact page of the old website"
+  afterAlt="Contact page of the new website"
+/>
