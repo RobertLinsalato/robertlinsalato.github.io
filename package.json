@@ -22,7 +22,6 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "astro": "^7.2.0",
-    "astro-carousel": "^4.0.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "rss-parser": "^3.13.0",
