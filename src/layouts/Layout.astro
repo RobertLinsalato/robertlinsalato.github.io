@@ -39,17 +39,34 @@ const { title = "Robert Linsalato" } = Astro.props;
         const closeBtn = document.getElementById('modal-close-btn');
         const prevBtn = document.getElementById('modal-prev-btn');
         const nextBtn = document.getElementById('modal-next-btn');
+        const navGroup = document.getElementById('modal-nav-group');
 
         if (!modal || !modalImg || !closeBtn) return;
 
-        const images = Array.from(document.querySelectorAll<HTMLImageElement>('.carousel-image'));
+        // Group 1: Carousel Images
+        const carouselImages = Array.from(document.querySelectorAll<HTMLImageElement>('.carousel-image'));
+        
+        // Group 2: Standalone Images (Filters out carousel images just in case)
+        const standaloneImages = Array.from(document.querySelectorAll<HTMLImageElement>('.image-column img, .markdown-content img:not(.carousel-image)'));
+        
         let currentIndex = 0; 
+        let isCarouselActive = false;
 
         const openModal = (e: MouseEvent) => {
           const target = e.target as HTMLImageElement;
-          currentIndex = images.indexOf(target);
           if (!modalImg) return;
-          modalImg.src = images[currentIndex].src;
+          
+          modalImg.src = target.src;
+          isCarouselActive = target.classList.contains('carousel-image');
+
+          // Toggle the navigation group based on the image type
+          if (isCarouselActive) {
+            currentIndex = carouselImages.indexOf(target);
+            if (navGroup) navGroup.style.display = 'flex';
+          } else {
+            if (navGroup) navGroup.style.display = 'none';
+          }
+
           modal.classList.remove('modal-hidden');
         };
 
@@ -59,17 +76,26 @@ const { title = "Robert Linsalato" } = Astro.props;
         };
 
         const navigateModal = (direction: number) => {
-          if (images.length === 0) return;
+          // Block navigation if it's a standalone image
+          if (!isCarouselActive || carouselImages.length === 0) return;
           
           currentIndex += direction;
           
-          if (currentIndex < 0) currentIndex = images.length - 1;
-          if (currentIndex >= images.length) currentIndex = 0;
+          if (currentIndex < 0) currentIndex = carouselImages.length - 1;
+          if (currentIndex >= carouselImages.length) currentIndex = 0;
           
-          modalImg.src = images[currentIndex].src;
+          modalImg.src = carouselImages[currentIndex].src;
         };
 
-        images.forEach(img => {
+        // Attach to Carousel Images
+        carouselImages.forEach(img => {
+          img.removeEventListener('click', openModal); 
+          img.addEventListener('click', openModal);
+        });
+
+        // Attach to Standalone Images
+        standaloneImages.forEach(img => {
+          img.style.cursor = 'zoom-in'; // Ensure cursor shows it is clickable
           img.removeEventListener('click', openModal); 
           img.addEventListener('click', openModal);
         });
@@ -90,8 +116,12 @@ const { title = "Robert Linsalato" } = Astro.props;
         modalKeydownHandler = (e) => {
           if (!modal.classList.contains('modal-hidden')) {
             if (e.key === 'Escape') closeModal();
-            if (e.key === 'ArrowLeft') navigateModal(-1);
-            if (e.key === 'ArrowRight') navigateModal(1);
+            
+            // Only allow arrow key navigation for carousels
+            if (isCarouselActive) {
+              if (e.key === 'ArrowLeft') navigateModal(-1);
+              if (e.key === 'ArrowRight') navigateModal(1);
+            }
           }
         };
 
