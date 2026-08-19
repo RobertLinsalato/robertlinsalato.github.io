@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout title="404 | NOT FOUND">
+  <main>
+    <Header activePage="404" />
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// SYS.ERROR_404</h2>
+      </div>
+      <div class="panel-body about-content">
+        <h1><span class="new-alert">!!! SYS.ERROR_404 !!!</span></h1>
+        <p>
+          The requested system path could not be resolved. The file may have been moved, deleted, or never existed in the archive.
+        </p>
+        
+        <div style="margin-top: 2rem;">
+          <a href="/" class="terminal-btn">
+            > RETURN_TO_HOME
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-container">
+        <div class="panel-header">
+            <h2>> System Quote:</h2>
+        </div>
+        <div class="panel-body about-content">
+            <p>I have wandered like a lost sheep;</p>
+            <p>seek out your servant,</p>
+            <p>for I do not forget your commandments.</p>
+            <p><i>&nbsp;&nbsp;Psalms 119:176</i></p>
+        </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .new-alert {
+    color: var(--alert);
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    margin-right: 0.5rem;
+    animation: retro-pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes retro-pulse {
+    0%, 100% { color: var(--alert); }
+    50% { color: #7f1d1d; } 
+  }
+</style>
