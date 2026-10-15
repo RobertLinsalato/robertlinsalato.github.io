@@ -1,0 +1,223 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import ImageCarousel from '../../components/ImageCarousel.astro';
+import JumpNav from '../../components/JumpNav.astro'; // <-- 1. Import JumpNav
+
+export async function getStaticPaths() {
+  const devlogs = await getCollection('devlogs');
+
+  return devlogs.map(log => {
+    const projectLogs = devlogs
+      .filter(item => item.data.project === log.data.project)
+      .sort((a, b) => {
+        const numDiff = a.data.logNumber - b.data.logNumber;
+        return numDiff !== 0 ? numDiff : new Date(a.data.date).getTime() - new Date(b.data.date).getTime();
+      });
+
+    const currentIndex = projectLogs.findIndex(item => item.id === log.id);
+    const prevLog = currentIndex > 0 ? projectLogs[currentIndex - 1] : null;
+    const nextLog = currentIndex < projectLogs.length - 1 ? projectLogs[currentIndex + 1] : null;
+
+    return {
+      params: { id: log.id },
+      props: { log, prevLog, nextLog },
+    };
+  });
+}
+
+const { log, prevLog, nextLog } = Astro.props;
+
+// 2. Destructure headings alongside Content
+const { Content, headings } = await render(log);
+
+function calculateReadTime(content: string = ''): string {
+  const cleanText = content.replace(/```[\s\S]*?```/g, '').replace(/<[^>]*>/g, '');
+  const words = cleanText.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.ceil(words / 200);
+  return `${Math.max(1, minutes)} MIN READ`;
+}
+
+const paddedNum = String(log.data.logNumber).padStart(2, '0');
+const prevPadded = prevLog ? String(prevLog.data.logNumber).padStart(2, '0') : '';
+const nextPadded = nextLog ? String(nextLog.data.logNumber).padStart(2, '0') : '';
+
+const readTime = (log.data as any).readTime 
+  ? String((log.data as any).readTime).toUpperCase() 
+  : calculateReadTime(log.body);
+---
+
+<Layout title={`Robert Linsalato | ${log.data.project} Devlog #${paddedNum}`}>
+  <!-- Add JumpNav here -->
+  <JumpNav headings={headings} />
+
+  <main>
+    <Header activePage="devlogs" />
+
+    <article class="panel-container">
+      <div class="panel-header">
+        <h2>
+          /// [{log.data.project.toUpperCase()}] DEVLOG #{paddedNum}: {log.data.title.toUpperCase()}
+        </h2>
+        <div class="header-meta">
+          <span class="read-time">[{readTime}]</span>
+          <span class="date">[{log.data.date}]</span>
+        </div>
+      </div>
+
+      <div class="panel-body project-content markdown-content">
+        {log.data.gallery && log.data.gallery.length > 0 && (
+          <ImageCarousel title="SYS.DEVLOG_MEDIA" images={log.data.gallery} />
+        )}
+
+        <Content />
+      </div>
+    </article>
+
+    <!-- Sequential Project Devlog Navigation -->
+    <nav class="devlog-Sequence-nav" aria-label="Project Devlog Navigation">
+      <div class="seq-slot prev-slot">
+        {prevLog ? (
+          <a href={`/devlogs/${prevLog.id}`} class="terminal-btn seq-btn">
+            <span class="seq-dir">&lt; PREV_LOG [#{prevPadded}]</span>
+            <span class="seq-title">{prevLog.data.title}</span>
+          </a>
+        ) : (
+          <div class="seq-disabled">
+            <span class="seq-dir">&lt; START_OF_LOG_STREAM</span>
+            <span class="seq-title">[{log.data.project.toUpperCase()}]</span>
+          </div>
+        )}
+      </div>
+
+      <div class="seq-slot center-slot">
+        <a href="/devlogs" class="terminal-btn return-btn">&gt;DEVLOG_INDEX</a>
+      </div>
+
+      <div class="seq-slot next-slot">
+        {nextLog ? (
+          <a href={`/devlogs/${nextLog.id}`} class="terminal-btn seq-btn next-align">
+            <span class="seq-dir">NEXT_LOG [#{nextPadded}] &gt;</span>
+            <span class="seq-title">{nextLog.data.title}</span>
+          </a>
+        ) : (
+          <div class="seq-disabled next-align">
+            <span class="seq-dir">END_OF_LOG_STREAM &gt;</span>
+            <span class="seq-title">[AWAITING_UPDATE]</span>
+          </div>
+        )}
+      </div>
+    </nav>
+  </main>
+</Layout>
+
+<style>
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .read-time {
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .date { 
+    font-size: 0.75rem; 
+    color: #71717a; 
+  }
+  .project-content { 
+    padding: 1.5rem; 
+    color: #c5c8c6; 
+    line-height: 1.6; 
+  }
+
+  /* --- SEQUENTIAL NAVIGATION BAR --- */
+  .devlog-Sequence-nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: stretch;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .seq-slot {
+    display: flex;
+  }
+
+  .prev-slot { justify-content: flex-start; }
+  .center-slot { justify-content: center; align-items: center; }
+  .next-slot { justify-content: flex-end; }
+
+  .seq-btn, .seq-disabled {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem;
+    width: 100%;
+    padding: 0.65rem 1rem;
+    text-decoration: none;
+  }
+
+  .seq-disabled {
+    border: 1px dashed var(--border);
+    background-color: rgba(24, 26, 27, 0.4);
+    color: #52525b;
+    font-size: 0.75rem;
+    cursor: not-allowed;
+    user-select: none;
+  }
+
+  .next-align {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .seq-dir {
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+  }
+
+  .seq-disabled .seq-dir {
+    color: #52525b;
+  }
+
+  .seq-title {
+    font-size: 0.8rem;
+    color: #e4e4e7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 240px;
+  }
+
+  .seq-disabled .seq-title {
+    color: #52525b;
+  }
+
+  .return-btn {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 1rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 700px) {
+    .devlog-Sequence-nav {
+      grid-template-columns: 1fr;
+    }
+    .seq-title {
+      max-width: 100%;
+    }
+    .next-align {
+      text-align: left;
+      align-items: flex-start;
+    }
+  }
+</style>

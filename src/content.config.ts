@@ -15,4 +15,16 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { projects };
+const devlogs = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/devlogs" }),
+  schema: z.object({
+    title: z.string(),
+    project: z.string(),     // e.g., "Dumpster Fire"
+    logNumber: z.number(),   // e.g., 1, 2, 3
+    date: z.string(),        // e.g., "2026-10-13"
+    description: z.string().optional(),
+    gallery: z.array(z.string()).optional(),
+  }),
+});
+
+export const collections = { projects, devlogs };

@@ -1,0 +1,201 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+const allDevlogs = await getCollection('devlogs');
+
+// Default sort: Newest date first, then highest logNumber
+const sortedDevlogs = allDevlogs.sort((a, b) => {
+  const dateDiff = new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+  return dateDiff !== 0 ? dateDiff : b.data.logNumber - a.data.logNumber;
+});
+
+const now = new Date().getTime();
+const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+
+const processedDevlogs = sortedDevlogs.map(log => {
+  const logTime = new Date(log.data.date).getTime();
+  return {
+    ...log,
+    logTime,
+    isNew: (now - logTime) <= thirtyDaysInMs,
+    paddedNum: String(log.data.logNumber).padStart(2, '0'),
+    formattedDate: new Date(log.data.date).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }),
+  };
+});
+
+const uniqueProjects = [...new Set(allDevlogs.map(log => log.data.project))].sort();
+---
+
+<Layout title="Robert Linsalato | Devlogs">
+  <main>
+    <Header activePage="devlogs" />
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// SYS.DEVLOG_ARCHIVE</h2>
+        <span class="count" id="log-count">{processedDevlogs.length} LOGS</span>
+      </div>
+
+      <div class="panel-body">
+        <!-- Terminal Filter & Sort Controls -->
+        <div class="controls-wrapper">
+          <div class="control-group">
+            <span class="panel-tag">/// FILTER_PROJECT:</span>
+            <div class="btn-group" id="project-filters">
+              <button class="filter-btn active" data-project="ALL">[ALL]</button>
+              {uniqueProjects.map(proj => (
+                <button class="filter-btn" data-project={proj}>[{proj.toUpperCase()}]</button>
+              ))}
+            </div>
+          </div>
+
+          <div class="control-group">
+            <span class="panel-tag">/// SORT_BY:</span>
+            <div class="btn-group" id="sort-controls">
+              <button class="sort-btn active" data-sort="date-desc">[DATE ▼]</button>
+              <button class="sort-btn" data-sort="num-desc">[LOG # ▼]</button>
+              <button class="sort-btn" data-sort="num-asc">[LOG # ▲]</button>
+              <button class="sort-btn" data-sort="project">[PROJECT A-Z]</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Devlog List using Global Catalogue Row Styles -->
+        <div id="devlog-list">
+          {processedDevlogs.map((log) => (
+            <div 
+              class="catalogue-row devlog-row" 
+              data-project={log.data.project}
+              data-number={log.data.logNumber}
+              data-date={log.logTime}
+            >
+              <div class="main-info">
+                <span class="date">[{log.formattedDate}]</span>
+
+                {log.isNew && <span class="new-alert">!!! NEW !!!</span>}
+
+                <a href={`/devlogs/${log.id}`} class="title-link">{log.data.title}</a>
+
+                <div class="tags-container">
+                  <span class="tech-tag">[DEVLOG #{log.paddedNum}]</span>
+                </div>
+
+                <div class="categories-wrapper">
+                  <span class="category-tag category-devlog">{log.data.project}</span>
+                </div>
+              </div>
+
+              {log.data.description && <p class="description">{log.data.description}</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  const list = document.getElementById('devlog-list');
+  const rows = Array.from(document.querySelectorAll('.devlog-row')) as HTMLElement[];
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const sortBtns = document.querySelectorAll('.sort-btn');
+  const countSpan = document.getElementById('log-count');
+
+  let activeProject = 'ALL';
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeProject = btn.getAttribute('data-project') || 'ALL';
+
+      let visibleCount = 0;
+      rows.forEach(row => {
+        const matches = activeProject === 'ALL' || row.getAttribute('data-project') === activeProject;
+        row.style.display = matches ? 'block' : 'none';
+        if (matches) visibleCount++;
+      });
+
+      if (countSpan) countSpan.textContent = `${visibleCount} LOGS`;
+    });
+  });
+
+  sortBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      sortBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const sortType = btn.getAttribute('data-sort');
+
+      const sorted = [...rows].sort((a, b) => {
+        const dateA = Number(a.getAttribute('data-date'));
+        const dateB = Number(b.getAttribute('data-date'));
+        const numA = Number(a.getAttribute('data-number'));
+        const numB = Number(b.getAttribute('data-number'));
+        const projA = a.getAttribute('data-project') || '';
+        const projB = b.getAttribute('data-project') || '';
+
+        if (sortType === 'date-desc') return dateB - dateA || numB - numA;
+        if (sortType === 'num-desc') return numB - numA || dateB - dateA;
+        if (sortType === 'num-asc') return numA - numB || dateA - dateB;
+        if (sortType === 'project') {
+          const cmp = projA.localeCompare(projB);
+          return cmp !== 0 ? cmp : numB - numA;
+        }
+        return 0;
+      });
+
+      sorted.forEach(row => list?.appendChild(row));
+    });
+  });
+</script>
+
+<style>
+  /* Only page-specific filter & sort controls remain here! */
+  .controls-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.5rem 0 1rem 0;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .control-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .control-group .panel-tag {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+  }
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .filter-btn, .sort-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .filter-btn:hover, .sort-btn:hover,
+  .filter-btn.active, .sort-btn.active {
+    color: var(--accent);
+    border-color: var(--accent);
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+</style>

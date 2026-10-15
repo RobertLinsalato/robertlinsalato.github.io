@@ -1,0 +1,255 @@
+---
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const { headings = [] } = Astro.props;
+
+// Filter to H2 and H3 headings
+const sections = headings.filter(h => h.depth === 2 || h.depth === 3);
+---
+
+{sections.length > 0 && (
+  <aside class="jump-dock-wrapper" aria-label="Jump to section outline">
+    {/* The vertical handle matching your mockup */}
+    <div class="dock-tab" aria-hidden="true">
+      <span class="tab-arrow-top">&lt;</span>
+      <span class="tab-text">JUMP TO SECTION</span>
+      <span class="tab-arrow-bottom">&lt;</span>
+    </div>
+
+    {/* The flyout drawer that slides into view */}
+    <div class="dock-panel">
+      <div class="dock-header">
+        <span class="dock-tag">/// SYS.OUTLINE</span>
+      </div>
+
+      <nav class="dock-nav">
+        <ul class="dock-list">
+          {sections.map(section => (
+            <li class={`dock-item depth-${section.depth}`}>
+              <a href={`#${section.slug}`} class="dock-link" data-slug={section.slug}>
+                <span class="dock-indicator">&gt;</span>
+                <span class="dock-label">{section.text}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </aside>
+)}
+
+<script>
+  function initJumpNav() {
+    const dock = document.querySelector('.jump-dock-wrapper');
+    if (!dock) return;
+
+    const links = Array.from(dock.querySelectorAll<HTMLAnchorElement>('.dock-link'));
+    const slugs = links.map(link => link.dataset.slug).filter(Boolean) as string[];
+
+    const headingEls = slugs
+      .map(slug => document.getElementById(slug))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (headingEls.length === 0) return;
+
+    let activeSlug = slugs[0];
+
+    const updateActive = (slug: string) => {
+      if (activeSlug === slug) return;
+      activeSlug = slug;
+      links.forEach(link => {
+        if (link.dataset.slug === slug) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    };
+
+    // Set initial active state
+    links[0]?.classList.add('active');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            updateActive(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: '0px 0px -65% 0px',
+        threshold: 0,
+      }
+    );
+
+    headingEls.forEach(el => observer.observe(el));
+  }
+
+  document.addEventListener('DOMContentLoaded', initJumpNav);
+  document.addEventListener('astro:page-load', initJumpNav);
+</script>
+
+<style>
+  /* --- WRAPPER & SLIDE-OUT MECHANICS --- */
+  .jump-dock-wrapper {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) translateX(240px); /* Hides drawer, reveals tab */
+    display: flex;
+    align-items: stretch;
+    z-index: 900;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Slide entire unit to the left when hovered or focused */
+  .jump-dock-wrapper:hover,
+  .jump-dock-wrapper:focus-within {
+    transform: translateY(-50%) translateX(0);
+  }
+
+  /* --- VERTICAL HANDLE (Matches your mockup) --- */
+  .dock-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1e2022;
+    border: 2px solid #2e3235;
+    border-right: none;
+    padding: 0.9rem 0.45rem;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.4);
+    min-width: 32px;
+  }
+
+  .jump-dock-wrapper:hover .dock-tab,
+  .jump-dock-wrapper:focus-within .dock-tab {
+    border-color: var(--accent);
+  }
+
+  .tab-arrow-top,
+  .tab-arrow-bottom {
+    font-size: 0.75rem;
+    font-weight: 900;
+    color: #a1a1aa;
+    line-height: 1;
+    font-family: var(--font-mono);
+  }
+
+  .tab-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: #e4e4e7;
+    margin: 0.8rem 0;
+    white-space: nowrap;
+  }
+
+  .jump-dock-wrapper:hover .tab-text,
+  .jump-dock-wrapper:focus-within .tab-text {
+    color: var(--accent);
+  }
+
+  /* --- FLYOUT PANEL --- */
+  .dock-panel {
+    width: 240px;
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    border-right: none;
+    padding: 1rem 1rem 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    box-shadow: -6px 0 16px rgba(0, 0, 0, 0.5);
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .dock-header {
+    padding-bottom: 0.4rem;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .dock-tag {
+    font-size: 0.7rem;
+    color: var(--accent);
+    font-weight: bold;
+    letter-spacing: 0.08em;
+  }
+
+  /* --- NAV LIST --- */
+  .dock-nav {
+    width: 100%;
+  }
+
+  .dock-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .dock-item.depth-3 {
+    padding-left: 0.75rem;
+  }
+
+  .dock-link {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    transition: color 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dock-indicator {
+    color: #52525b;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    transition: color 0.15s ease;
+  }
+
+  .dock-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dock-link:hover {
+    color: var(--accent);
+  }
+
+  .dock-link:hover .dock-indicator {
+    color: var(--accent);
+  }
+
+  /* --- ACTIVE HEADING STATE --- */
+  .dock-link.active {
+    color: var(--accent);
+    font-weight: bold;
+  }
+
+  .dock-link.active .dock-indicator {
+    color: var(--accent);
+  }
+
+  /* --- DESKTOP ONLY (HIDDEN ON PHONES & TABLETS) --- */
+  @media (max-width: 1100px) {
+    .jump-dock-wrapper {
+      display: none !important;
+    }
+  }
+</style>

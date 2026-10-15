@@ -1,0 +1,208 @@
+---
+interface Props {
+  src: string;
+  poster?: string;
+}
+
+const { src, poster } = Astro.props;
+---
+
+<terminal-video class="hardware-panel" style="padding: 0; display: block; position: relative;">
+  <span class="panel-tag video-tag">/// SYS.VIDEO_FEED</span>
+  
+  <div class="video-wrapper">
+    <video src={src} poster={poster} class="sys-video" playsinline preload="metadata"></video>
+    
+    <div class="video-controls">
+      <button class="terminal-btn play-btn" aria-label="Play/Pause">
+        > PLAY
+      </button>
+      
+      <div class="progress-container" aria-label="Video progress">
+        <div class="progress-bar"></div>
+      </div>
+      
+      <div class="time-display">00:00 / 00:00</div>
+      
+      <button class="terminal-btn mute-btn" aria-label="Mute/Unmute">
+        > VOL: ON
+      </button>
+      
+      <button class="terminal-btn fs-btn" aria-label="Fullscreen">
+        [ ]
+      </button>
+    </div>
+  </div>
+</terminal-video>
+
+<style>
+  .video-wrapper {
+    display: flex;
+    flex-direction: column;
+    background-color: #000;
+    width: 100%;
+    position: relative;
+  }
+
+.video-tag {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background-color: var(--bg);
+    color: var(--accent);
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--border);
+    z-index: 20; /* Forces it above the video element */
+  }
+
+  .sys-video {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+    cursor: pointer;
+  }
+
+  /* --- CUSTOM CONTROL BAR --- */
+  .video-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background-color: var(--panel);
+    border-top: 1px dashed var(--border);
+  }
+
+  /* Make the buttons a bit smaller to fit nicely in the control bar */
+  .video-controls .terminal-btn {
+    padding: 0.25rem 0.75rem 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  /* --- PROGRESS BAR --- */
+  .progress-container {
+    flex-grow: 1;
+    height: 12px;
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--accent);
+    transition: width 0.1s linear;
+  }
+
+  .time-display {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+
+/* Handle Fullscreen sizing properly */
+  .video-wrapper:fullscreen {
+    background-color: #000;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .video-wrapper:fullscreen .sys-video {
+    flex: 1;            /* Expands video to fill all space above the controls */
+    min-height: 0;      /* Prevents video from pushing the controls off-screen */
+    max-height: none;   /* Overrides the 70vh limit from standard view */
+    width: 100%;
+    height: 100%;
+  }
+
+  .video-wrapper:fullscreen .video-controls {
+    width: 100%;
+    flex-shrink: 0;     /* Keeps the control bar at its natural height at the bottom */
+  }
+</style>
+
+<script>
+  class TerminalVideo extends HTMLElement {
+    connectedCallback() {
+      const wrapper = this.querySelector('.video-wrapper') as HTMLElement;
+      const video = this.querySelector('.sys-video') as HTMLVideoElement;
+      const playBtn = this.querySelector('.play-btn') as HTMLButtonElement;
+      const muteBtn = this.querySelector('.mute-btn') as HTMLButtonElement;
+      const fsBtn = this.querySelector('.fs-btn') as HTMLButtonElement;
+      const progressContainer = this.querySelector('.progress-container') as HTMLElement;
+      const progressBar = this.querySelector('.progress-bar') as HTMLElement;
+      const timeDisplay = this.querySelector('.time-display') as HTMLElement;
+
+      if (!video) return;
+
+      // 1. Format time (e.g., 65s -> 1:05)
+      const formatTime = (time: number) => {
+        if (isNaN(time)) return "00:00";
+        const m = Math.floor(time / 60);
+        const s = Math.floor(time % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+      };
+
+      // 2. Play / Pause
+      const togglePlay = () => {
+        if (video.paused) {
+          video.play();
+          playBtn.innerText = '> PAUSE';
+        } else {
+          video.pause();
+          playBtn.innerText = '> PLAY';
+        }
+      };
+
+      playBtn.addEventListener('click', togglePlay);
+      video.addEventListener('click', togglePlay);
+
+      // 3. Update Progress Bar & Time
+      video.addEventListener('timeupdate', () => {
+        const percent = (video.currentTime / video.duration) * 100;
+        progressBar.style.width = `${percent}%`;
+        timeDisplay.innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+      });
+
+      // Load initial duration metadata
+      video.addEventListener('loadedmetadata', () => {
+        timeDisplay.innerText = `00:00 / ${formatTime(video.duration)}`;
+      });
+
+      // 4. Scrubbing / Seeking
+      progressContainer.addEventListener('click', (e) => {
+        const rect = progressContainer.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        video.currentTime = pos * video.duration;
+      });
+
+      // 5. Mute Toggle
+      muteBtn.addEventListener('click', () => {
+        video.muted = !video.muted;
+        muteBtn.innerText = video.muted ? '> VOL: MUTED' : '> VOL: ON';
+        muteBtn.style.color = video.muted ? 'var(--alert)' : 'var(--accent)';
+      });
+
+      // 6. Fullscreen
+      fsBtn.addEventListener('click', () => {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          // We fullscreen the WRAPPER, not just the video, so our custom controls come with it!
+          wrapper.requestFullscreen();
+        }
+      });
+    }
+  }
+
+  customElements.define('terminal-video', TerminalVideo);
+</script>
