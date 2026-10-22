@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';
 
@@ -11,13 +12,23 @@ const { title = "Robert Linsalato" } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+    <ClientRouter />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@arraypress/waveform-player@latest/dist/waveform-player.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@arraypress/waveform-player@latest/dist/waveform-player.css" />
   </head>
   <body>
+    <div id="terminal-shutter" aria-hidden="true" transition:persist>
+      <div class="shutter-box">
+        <span class="shutter-tag">/// SYS.TRANSIT</span>
+        <div class="shutter-content">
+          <span class="shutter-text">/// LOADING</span>
+          <span class="shutter-dots"></span>
+        </div>
+      </div>
+    </div>
+
     <div class="site-container">
       <slot />
-      
     </div>
 
     <div id="global-image-modal" class="modal-hidden">
@@ -30,6 +41,7 @@ const { title = "Robert Linsalato" } = Astro.props;
         <button id="modal-next-btn" class="modal-nav-btn">NEXT &gt;</button>
       </div>
     </div>
+
     <script>
       let modalKeydownHandler: ((e: KeyboardEvent) => void) | undefined;
 
@@ -43,10 +55,7 @@ const { title = "Robert Linsalato" } = Astro.props;
 
         if (!modal || !modalImg || !closeBtn) return;
 
-        // Group 1: Carousel Images
         const carouselImages = Array.from(document.querySelectorAll<HTMLImageElement>('.carousel-image'));
-        
-        // Group 2: Standalone Images (Filters out carousel images just in case)
         const standaloneImages = Array.from(document.querySelectorAll<HTMLImageElement>('.image-column img, .markdown-content img:not(.carousel-image)'));
         
         let currentIndex = 0; 
@@ -59,7 +68,6 @@ const { title = "Robert Linsalato" } = Astro.props;
           modalImg.src = target.src;
           isCarouselActive = target.classList.contains('carousel-image');
 
-          // Toggle the navigation group based on the image type
           if (isCarouselActive) {
             currentIndex = carouselImages.indexOf(target);
             if (navGroup) navGroup.style.display = 'flex';
@@ -76,31 +84,25 @@ const { title = "Robert Linsalato" } = Astro.props;
         };
 
         const navigateModal = (direction: number) => {
-          // Block navigation if it's a standalone image
           if (!isCarouselActive || carouselImages.length === 0) return;
           
           currentIndex += direction;
-          
           if (currentIndex < 0) currentIndex = carouselImages.length - 1;
           if (currentIndex >= carouselImages.length) currentIndex = 0;
-          
           modalImg.src = carouselImages[currentIndex].src;
         };
 
-        // Attach to Carousel Images
         carouselImages.forEach(img => {
           img.removeEventListener('click', openModal); 
           img.addEventListener('click', openModal);
         });
 
-        // Attach to Standalone Images
         standaloneImages.forEach(img => {
-          img.style.cursor = 'zoom-in'; // Ensure cursor shows it is clickable
+          img.style.cursor = 'zoom-in';
           img.removeEventListener('click', openModal); 
           img.addEventListener('click', openModal);
         });
 
-        // Wire up the click events
         closeBtn.addEventListener('click', closeModal);
         if (prevBtn) prevBtn.addEventListener('click', () => navigateModal(-1));
         if (nextBtn) nextBtn.addEventListener('click', () => navigateModal(1));
@@ -116,8 +118,6 @@ const { title = "Robert Linsalato" } = Astro.props;
         modalKeydownHandler = (e) => {
           if (!modal.classList.contains('modal-hidden')) {
             if (e.key === 'Escape') closeModal();
-            
-            // Only allow arrow key navigation for carousels
             if (isCarouselActive) {
               if (e.key === 'ArrowLeft') navigateModal(-1);
               if (e.key === 'ArrowRight') navigateModal(1);
@@ -130,13 +130,44 @@ const { title = "Robert Linsalato" } = Astro.props;
 
       document.addEventListener('DOMContentLoaded', setupImageModal);
       document.addEventListener('astro:page-load', setupImageModal);
+
+      // --- TRANSITION SHUTTER CONTROLLER ---
+      const shutter = document.getElementById('terminal-shutter');
+
+      document.addEventListener('astro:before-preparation', (e) => {
+        if (!shutter) return;
+
+        document.body.style.overflow = 'hidden';
+
+        shutter.classList.remove('shutter-opening');
+        shutter.classList.add('shutter-closing');
+
+        const originalLoader = (e as any).loader;
+        (e as any).loader = async () => {
+          // Slowed down to 600ms so the loading box is clearly visible
+          await new Promise((resolve) => setTimeout(resolve, 600));
+          await originalLoader();
+        };
+      });
+
+      document.addEventListener('astro:after-swap', () => {
+        if (!shutter) return;
+
+        shutter.classList.remove('shutter-closing');
+        shutter.classList.add('shutter-opening');
+
+        // Matches the slower 500ms exit animation
+        setTimeout(() => {
+          shutter.classList.remove('shutter-opening');
+          document.body.style.overflow = '';
+        }, 500);
+      });
     </script>
-  </body>
   <Footer />
+  </body>
 </html>
 
 <style>
-
   #modal-nav-group {
     position: absolute;
     bottom: 2rem;
@@ -199,5 +230,4 @@ const { title = "Robert Linsalato" } = Astro.props;
     transform: translateY(1px);
     box-shadow: 1px 1px 0px var(--accent, #00ff66);
   }
-
 </style>

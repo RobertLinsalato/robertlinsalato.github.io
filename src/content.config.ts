@@ -16,14 +16,16 @@ const projects = defineCollection({
 });
 
 const devlogs = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/devlogs" }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/devlogs' }),
   schema: z.object({
     title: z.string(),
-    project: z.string(),     // e.g., "Dumpster Fire"
-    logNumber: z.number(),   // e.g., 1, 2, 3
-    date: z.string(),        // e.g., "2026-10-13"
+    project: z.string(),
+    logNumber: z.number(),
+    date: z.string(),
     description: z.string().optional(),
     gallery: z.array(z.string()).optional(),
+    readTime: z.union([z.string(), z.number()]).optional(),
+    signature: z.string().optional(),
   }),
 });
 

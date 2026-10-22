@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 import CatalogueItem from '../components/CatalogueItem.astro';
 
 const allProjects = await getCollection('projects');
@@ -36,6 +35,7 @@ const allDevlogsCount = sortedDevlogs
         day: '2-digit',
         month: 'short',
         year: 'numeric',
+        timeZone: 'UTC',
       }),
     };
   });
@@ -51,6 +51,7 @@ const allDevlogsCount = sortedDevlogs
       <div class="panel-header"><h2><a href="/about">/// ABOUT</a></h2></div>
       <div class="panel-body bio-text">
         <p>I am a game developer and audio engineer focused on building interactive systems, sound design, and live audio engineering. Read more <a href="/about">here</a>.</p>
+        <p>Interested in working together? <a href="/contact">Reach out</a> and let's make some cool things!</p>
       </div>
     </section>
 
@@ -91,9 +92,10 @@ const allDevlogsCount = sortedDevlogs
               <div class="tags-container">
                 <span class="tech-tag">[DEVLOG #{log.paddedNum}]</span>
               </div>
-
               <div class="categories-wrapper">
-                <span class="category-tag category-devlog">{log.data.project}</span>
+                <span class={`category-tag category-devlog project-${log.data.project.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>
+                  {log.data.project}
+                </span>
               </div>
             </div>
           </div>

@@ -5,9 +5,22 @@ const currentYear = new Date().getFullYear();
 <footer class="site-footer">
   <div class="footer-content">
     <p class="copyright">© {currentYear} ROBERT LINSALATO</p>
+
+    <p class="footer-quote">
+      <b aria-hidden="true" style="--i:0">E</b>
+      <b aria-hidden="true" style="--i:1">x</b>
+      <b aria-hidden="true" style="--i:2">o</b>
+      <b aria-hidden="true" style="--i:3">d</b>
+      <b aria-hidden="true" style="--i:4">u</b>
+      <b aria-hidden="true" style="--i:5">s</b>
+      <b aria-hidden="true" style="--i:6">&nbsp;</b>
+      <b aria-hidden="true" style="--i:7">1</b>
+      <b aria-hidden="true" style="--i:8">5</b>
+      <b aria-hidden="true" style="--i:9">:</b>
+      <b aria-hidden="true" style="--i:10">2</b>
+    </p>
     
     <div class="footer-links">
-      <a href="https://github.com/robertlinsalato/robertlinsalato.github.io" target="_blank" rel="noopener noreferrer">[GITHUB]</a>
       <a href="/contact">[CONTACT]</a>
       <span class="system-status">SYS_ONLINE</span>
     </div>
@@ -16,32 +29,56 @@ const currentYear = new Date().getFullYear();
 
 <style>
   .site-footer {
-  margin-top: auto; 
-  padding-top: 1rem;
-  border-top: 1px solid var(--border, #33373b);
-  font-family: var(--font-mono, monospace);
-  font-size: 0.8rem;
-  color: #71717a;
-  padding-bottom: 1rem;
+    margin-top: auto; 
+    margin-bottom: 0;
+    padding-top: 1rem;
+    padding-bottom: 0.75rem;
+    border-top: 1px solid var(--border, #33373b);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8rem;
+    color: #71717a;
+    line-height: 1;
   }
 
+  /* Desktop layout */
   .footer-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
     gap: 1rem;
   }
 
   .copyright {
     margin: 0;
+    line-height: 1;
     letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .footer-quote {
+    margin: 0;
+    font-style: italic;
+    white-space: nowrap;
+  }
+
+  .footer-quote b {
+    font-weight: inherit;
+    display: inline-block;
+    animation: footer-quote 2s ease-in-out infinite;
+    animation-delay: calc(var(--i) * .14s);
+  }
+
+  @keyframes footer-quote {
+    0%, 100% { color: var(--text-muted, #71717a); transform: translateY(1px); }
+    50% { color: #ca9f06; transform: translateY(-1px); } 
   }
 
   .footer-links {
     display: flex;
     gap: 1rem;
     align-items: center;
+    line-height: 1;
+    white-space: nowrap;
   }
 
   .footer-links a {
@@ -51,7 +88,7 @@ const currentYear = new Date().getFullYear();
   }
 
   .footer-links a:hover {
-    color: #38bdf8;
+    color: var(--accent, #34d399);
   }
 
   .system-status {
@@ -60,5 +97,36 @@ const currentYear = new Date().getFullYear();
     padding: 0.1rem 0.3rem;
     font-size: 0.7rem;
     letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 650px) {
+    .footer-content {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      row-gap: 0.85rem;
+      align-items: center;
+    }
+
+    /* Top Left */
+    .copyright {
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: start;
+    }
+
+    /* Top Right */
+    .footer-links {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+    }
+
+    /* Bottom Middle Center */
+    .footer-quote {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      text-align: center;
+      margin: 0 auto;
+    }
   }
 </style>

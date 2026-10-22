@@ -11,14 +11,12 @@ const sections = headings.filter(h => h.depth === 2 || h.depth === 3);
 
 {sections.length > 0 && (
   <aside class="jump-dock-wrapper" aria-label="Jump to section outline">
-    {/* The vertical handle matching your mockup */}
     <div class="dock-tab" aria-hidden="true">
       <span class="tab-arrow-top">&lt;</span>
       <span class="tab-text">JUMP TO SECTION</span>
       <span class="tab-arrow-bottom">&lt;</span>
     </div>
 
-    {/* The flyout drawer that slides into view */}
     <div class="dock-panel">
       <div class="dock-header">
         <span class="dock-tag">/// SYS.OUTLINE</span>
@@ -98,20 +96,19 @@ const sections = headings.filter(h => h.depth === 2 || h.depth === 3);
     position: fixed;
     right: 0;
     top: 50%;
-    transform: translateY(-50%) translateX(240px); /* Hides drawer, reveals tab */
+    transform: translateY(-50%) translateX(240px);
     display: flex;
     align-items: stretch;
     z-index: 900;
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Slide entire unit to the left when hovered or focused */
   .jump-dock-wrapper:hover,
   .jump-dock-wrapper:focus-within {
     transform: translateY(-50%) translateX(0);
   }
 
-  /* --- VERTICAL HANDLE (Matches your mockup) --- */
+  /* --- VERTICAL HANDLE --- */
   .dock-tab {
     display: flex;
     flex-direction: column;
@@ -162,7 +159,7 @@ const sections = headings.filter(h => h.depth === 2 || h.depth === 3);
   .dock-panel {
     width: 240px;
     background-color: var(--panel);
-    border: 1px solid var(--border);
+    border: 1px solid var(--accent);
     border-right: none;
     padding: 1rem 1rem 1.25rem 1rem;
     display: flex;

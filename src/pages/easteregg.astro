@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout title="Easter Egg :)">
+  <main>
+    <Header activePage="easteregg" />
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// How'd you get here?</h2>
+      </div>
+      <div class="panel-body">
+        no seriously... how?
+        <br>
+        <br>
+        <br>
+        Well, since you're here...
+        <br>
+        <img class="egg-gif" src="/images/egg/source.gif">
+      </div>
+    </section>
+
+    <section class="panel-container">
+      <div class="panel-header">
+        <h2>/// now get out</h2>
+      </div>
+      <div class="panel-body">
+        <a href="/">please leave</a>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+    .egg-gif {
+        height: 25vh;
+        justify-content: center; 
+    }
+</style>

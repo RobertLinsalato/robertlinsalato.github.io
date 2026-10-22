@@ -22,34 +22,16 @@ import Header from '../components/Header.astro';
             > RETURN_TO_HOME
           </a>
         </div>
+        <hr class="fullBreak">
+        <div class="hardware-code-panel">
+          <code>
+            <span class="code-line">I have wandered like a <span class="token-amber">lost sheep</span>;</span>
+            <span class="code-line">  seek out your servant,</span>
+            <span class="code-line">  for <span class="token-highlight-text">I do not forget</span> your commandments.</span>
+            <span class="code-line token-comment"> /// Psalms 119:176 (NABRE)</span>
+          </code>
+        </div>
       </div>
-    </section>
-
-    <section class="panel-container">
-        <div class="panel-header">
-            <h2>> System Quote:</h2>
-        </div>
-        <div class="panel-body about-content">
-            <p>I have wandered like a lost sheep;</p>
-            <p>seek out your servant,</p>
-            <p>for I do not forget your commandments.</p>
-            <p><i>&nbsp;&nbsp;Psalms 119:176</i></p>
-        </div>
     </section>
   </main>
 </Layout>
-
-<style>
-  .new-alert {
-    color: var(--alert);
-    font-weight: bold;
-    letter-spacing: 0.05em;
-    margin-right: 0.5rem;
-    animation: retro-pulse 2s ease-in-out infinite;
-  }
-  
-  @keyframes retro-pulse {
-    0%, 100% { color: var(--alert); }
-    50% { color: #7f1d1d; } 
-  }
-</style>

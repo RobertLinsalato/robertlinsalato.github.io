@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import ImageCarousel from '../../components/ImageCarousel.astro'; 
+import JumpNav from '../../components/JumpNav.astro'; // <-- 1. Import JumpNav
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -13,13 +14,14 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { Content } = await render(project);
+const { Content, headings } = await render(project);
 
 // Calculate if the project is less than 30 days old (TypeScript safe)
 const isNew = (new Date().getTime() - new Date(project.data.date).getTime()) <= (30 * 24 * 60 * 60 * 1000);
 ---
 
 <Layout title={`Robert Linsalato | ${project.data.title}`}>
+  <JumpNav headings={headings} />
   <Header activePage="projects" />
   
   <article class="panel-container">

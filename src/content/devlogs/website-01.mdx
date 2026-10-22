@@ -1,0 +1,136 @@
+---
+title: "Lots'o Website Work"
+project: "Website"
+logNumber: 01
+date: "2026-10-21"
+description: "Creating, Simplifying, & Polishing"
+tags: ["astro", "css", "html"]
+signature: "oh yeah, there's also a signature at the end"
+---
+import TerminalVideo from "../../components/TerminalVideo.astro";
+import Latex from '../../components/Latex.astro';
+
+# /// SOME_WEBSITE_UPDATES
+
+Like all good ideas, the ones I've integrated into my site came in a hurried frenzy and took a weirdly short time to make.
+Some big, some small, some probably not noticeable/they don't even matter but they're cool.
+<hr class="fullBreak" />
+
+## /// DEV-LOGGIN_&_BLOGIN
+The biggest addition to my site since initially creating it has been making a new page for devlogs & potentially a standard blog.
+I wanted to add it originally when I made the first iteration of the site, but at that point, it was already too much and I needed a short break from putting out all the fires I was too busy setting.
+It's similar on the back-end to my projects page, but it has some new bells and whistles that I want to highlight here.
+
+### /// A_FRESH_LOOK
+<div class="split-row">
+  <div class="half-text">
+    First, there's a new filter and sort toolbar at the top of the list so when there's more deal with, it's easier for myself and users to find their way.
+    Also, each devlog series has their own color associated with it.
+    For now, it's just 2; Website and ["Animal Game"](animal-game-01).
+    There's sure to be more in the future as I work on new projects and want to start yapping about something.
+  </div>
+    <div class="half-photo">
+    <img src="/images/devlogs/website/01/new-devlog-page.png" alt="Screenshot of the new devlog landing page with different sorting methods" />
+  </div>
+</div>
+<hr class="smallBreak" />
+<div class="split-row">
+  <div class="half-photo">
+    <img src="/images/devlogs/website/01/devlog-time.png" alt="Screenshot of the devlog time to read" />
+  </div>
+  <div class="half-text">
+    Along with the landing page, each devlog has a header that includes a new "time to read" section.
+    I wrote a simple script that calculates how long it would take for a user to read.
+    All it really does is:
+  </div>
+</div>
+
+<div class="hardware-code-panel">
+  <code>
+    <span class="code-line"><span class="token-red">totalWords</span> = page.wordCount</span>
+    <span class="code-line"><span class="token-red">minutesToRead</span> = totalWords / 200</span>
+    <span class="code-line"><span class="token-red">return</span> "minutesToRead + MIN READ"</span>
+  </code>
+</div>
+
+Also if you didn't notice, that's a new <span class="inline-code token-amber">codeblock</span> element above.
+I'll be using around the site as it'll definitely help with the more technical devlogs. 
+Along with that, the footer on the page had some TLC put into it. 
+It's now properly sized with a pleasant surprise in the middle :)
+
+
+### /// A_FRESH_FEEL
+<div class="split-row">
+  <div class="half-text">
+    One of the things I'm more proud of making was the <span class="inline-code token-accent">[Jump To Section]</span> sidebar.
+    If a user on a desktop or tablet looks to the right of their screen, there's a box that they can hover over and skip to a header below. 
+    I've added it to both devlogs and projects, even though it'll mostly only be used on the former.
+    Other than the UX benefits for the user, it also allows for sharing links that go directly to headers.
+    For example, I could share a specific part of my devlog and make it go automatically to it.
+  </div>
+    <div class="half-photo">
+    <img src="/images/devlogs/website/01/devlog-jump-to.gif" alt="Gif of the new devlog [Jump To Section] component" />
+  </div>
+</div>
+<hr class="smallBreak" />
+<div class="split-row">
+  <div class="half-text">
+    One thing that I was hesitant to do at first was add a transition screen.
+    I knew I wanted to after finding Astro in the first place, but part of me didn't feel like it fit the style.
+    I decided to try adding it and I'm much more happy than I initially thought.
+    It makes navigation feel much smoother, it almost feels faster in a way, and it makes the site feel more unified.
+    If you have <span class="inline-code token-red">Reduce Motion</span> enabled on your device, you can see a recording of what it looks like below.
+  </div>
+    <div class="half-photo">
+    <img src="/images/devlogs/website/01/loading-transition.gif" alt="Gif of the new page loading transition" />
+  </div>
+</div>
+
+<TerminalVideo 
+  src="/videos/devlogs/website/01/loading-transition-vid.mp4"
+  poster="/videos/devlogs/website/01/transition-vid-thumb.jpg"
+/>
+<hr class="fullBreak" />
+
+## /// MATH+FORMULAS
+I haven't used it yet but I've begun toying around with <a href="https://katex.org" target="_blank">KaTeX</a>, a JS library to render math expressions so I can write equations on logs. 
+I'm not really a *math guy* but it'll hopefully come in handy in the future. For example, an equation I took note of in my physics class 2 years ago:
+<Latex
+  formula="F_E=k\frac{|Q_1Q_2|}{r^2}"
+  comment="COULOMB'S LAW"
+/>
+
+
+## /// GOODBYE_3D_SHOWCASE
+One of the more difficult decisions I had to make was removing the 3D Showcase from the site. There's a few reasons, but it mainly came down to:
+1) It had lots of storage and computational issues, even with the compressed GLTF files
+2) It didn't work well/at all on mobile
+3) There really wasn't a big use for it.
+
+Obviously there's always a chance to bring it back in the future, but it's not something that's on the top of my list now. If Sketchfab ever goes down, I'll definitely dust off the 'ol ThreeJS side of my brain.
+
+## /// VIDEO_KILLED_THE_HTML_PLAYER
+<div class="split-row">
+  <div class="half-text">
+    Something I'm still tinkering with is the a custom video player I added.
+    I wanted it to match the style of the rest of my site, but it definitely needs some TLC, as it's jankiness leaves a bit more to be desired. 
+    I'll be tinkering around with it for a bit before making a decision to leave it or send it to the chopping block.
+  </div>
+    <div class="half-photo">
+    <img src="/images/devlogs/website/01/video-player.gif" alt="Gif of the new custom video player wrapper" />
+  </div>
+</div>
+
+## /// CLEANING+UTILITIES
+After a break from working on it, I decided to take a look through my website's code that I hadn't touched since making it.
+Throughout my whole site, I kept on making rookie mistakes and creating new classes when existing ones worked just fine/I just forgot about them.
+A huge thing that I completely forgot about till recently was how the site appears on mobile devices, so I went through and changed things where needed so there wasn't annoying overhang.
+I also added a sitemap... not really that important for a site of my size, but it wouldn't hurt.
+Also a bunch of other things, but they're not really something I can show visually, though all of it was definitely needed with the amount I have going on. 
+
+## /// WRAPPING_UP
+After another month of working on my site, my love of Astro's ecosystem was reinforced.
+In the beginning, I was enamored with its ability to work so fast and keep everything so compact.
+The more I use it, the more I love the workflow and sometimes it reminds me of working in game engines.
+
+It's likely this will be a pretty rare devlog to be updated, just because I'm very comfortable with the place my site's in right now, unless I figure out a way to break everything.

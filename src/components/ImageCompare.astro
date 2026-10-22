@@ -14,19 +14,11 @@ const {
 } = Astro.props;
 ---
 
-{/* Our custom Web Component */}
 <compare-slider>
   <div class="compare-wrapper" style="--pos: 50%;">
-    {/* Base Image (After) */}
     <img src={afterImage} alt={afterAlt} class="img-base" />
-    
-    {/* Overlay Image (Before) - Clipped by CSS */}
     <img src={beforeImage} alt={beforeAlt} class="img-overlay" />
-    
-    {/* The Native HTML Range Slider - Invisible but interactive */}
     <input type="range" min="0" max="100" value="50" class="slider" aria-label="Percentage of before photo shown" />
-    
-    {/* The Retro Visual Handle */}
     <div class="slider-handle" aria-hidden="true">
       <div class="handle-line"></div>
       <div class="handle-button">&lt;|&gt;</div>
@@ -40,7 +32,7 @@ const {
     position: relative;
     width: 100%;
     max-width: 100%;
-    aspect-ratio: 16 / 9; /* Adjust or remove if you want it to conform perfectly to image size */
+    aspect-ratio: 16 / 9;
     overflow: hidden;
     border: 1px solid var(--border);
     background-color: var(--panel);
@@ -54,10 +46,9 @@ const {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    pointer-events: none; /* Let the slider receive all clicks */
+    pointer-events: none;
   }
 
-  /* The magic trick: clip the top image based on the --pos CSS variable */
   .img-overlay {
     clip-path: polygon(0 0, var(--pos) 0, var(--pos) 100%, 0 100%);
   }
@@ -71,7 +62,7 @@ const {
     height: 100%;
     opacity: 0; 
     cursor: ew-resize;
-    z-index: 20; /* Sits above everything to catch clicks/drags */
+    z-index: 20;
     margin: 0;
   }
 
@@ -82,7 +73,7 @@ const {
     bottom: 0;
     left: var(--pos);
     transform: translateX(-50%);
-    pointer-events: none; /* Let the invisible input handle the interactions */
+    pointer-events: none;
     z-index: 10;
     display: flex;
     flex-direction: column;
@@ -112,7 +103,6 @@ const {
 </style>
 
 <script>
-  // Defining a custom element ensures the JS fires perfectly during Astro View Transitions
   class CompareSlider extends HTMLElement {
     connectedCallback() {
       const wrapper = this.querySelector('.compare-wrapper') as HTMLElement;

@@ -29,12 +29,11 @@ def export_web_glb():
         export_cameras=False,
         export_lights=False,
         export_animations=True,
-        export_apply=False  # <--- Prevents the double-transform rig bug
+        export_apply=False 
     )
     
     print(f"/// SYS.SUCCESS -> Exported to: {export_path}")
 
-    # Automatically open the export folder in your OS file manager
     try:
         if sys.platform == 'win32':
             os.startfile(export_dir)

@@ -3,7 +3,8 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import ImageCarousel from '../../components/ImageCarousel.astro';
-import JumpNav from '../../components/JumpNav.astro'; // <-- 1. Import JumpNav
+import JumpNav from '../../components/JumpNav.astro';
+import Latex from '../../components/Latex.astro';
 
 export async function getStaticPaths() {
   const devlogs = await getCollection('devlogs');
@@ -28,8 +29,6 @@ export async function getStaticPaths() {
 }
 
 const { log, prevLog, nextLog } = Astro.props;
-
-// 2. Destructure headings alongside Content
 const { Content, headings } = await render(log);
 
 function calculateReadTime(content: string = ''): string {
@@ -49,7 +48,6 @@ const readTime = (log.data as any).readTime
 ---
 
 <Layout title={`Robert Linsalato | ${log.data.project} Devlog #${paddedNum}`}>
-  <!-- Add JumpNav here -->
   <JumpNav headings={headings} />
 
   <main>
@@ -58,7 +56,7 @@ const readTime = (log.data as any).readTime
     <article class="panel-container">
       <div class="panel-header">
         <h2>
-          /// [{log.data.project.toUpperCase()}] DEVLOG #{paddedNum}: {log.data.title.toUpperCase()}
+          /// [<span class={`project-title-color project-${log.data.project.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>{log.data.project.toUpperCase()}</span>] DEVLOG #{paddedNum}: {log.data.title.toUpperCase()}
         </h2>
         <div class="header-meta">
           <span class="read-time">[{readTime}]</span>
@@ -67,11 +65,29 @@ const readTime = (log.data as any).readTime
       </div>
 
       <div class="panel-body project-content markdown-content">
+        {log.data.description && (
+          <div class="hardware-carousel-wrapper" style="margin-top: 0;">
+            <span class="panel-tag">/// SUMMARY</span>
+            <p>{log.data.description}</p>
+          </div>
+        )}
+
         {log.data.gallery && log.data.gallery.length > 0 && (
           <ImageCarousel title="SYS.DEVLOG_MEDIA" images={log.data.gallery} />
         )}
 
         <Content />
+
+        {log.data.signature && (
+          <div class="devlog-signature-row">
+            <div class="devlog-signature">
+              <span class="signature-prefix">&gt;&gt;</span> {log.data.signature}
+            </div>
+            <div class="devlog-signature-date">
+              [{log.data.date}]
+            </div>
+          </div>
+        )}
       </div>
     </article>
 
@@ -118,19 +134,46 @@ const readTime = (log.data as any).readTime
     align-items: center;
     gap: 0.75rem;
   }
+
   .read-time {
     font-size: 0.75rem;
     color: var(--accent);
     letter-spacing: 0.05em;
   }
-  .date { 
-    font-size: 0.75rem; 
-    color: #71717a; 
+
+  .date { font-size: 0.75rem; color: #71717a; }
+  .project-content { padding: 1.5rem; color: #c5c8c6; line-height: 1.6; }
+
+  /* --- SIGNATURE ROW (SIDE-BY-SIDE) --- */
+  .devlog-signature-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-muted);
   }
-  .project-content { 
-    padding: 1.5rem; 
-    color: #c5c8c6; 
-    line-height: 1.6; 
+
+  .devlog-signature {
+    font-style: italic;
+  }
+
+  .devlog-signature-date {
+    font-size: 0.75rem;
+    font-style: normal;
+    color: #71717a;
+    margin-left: auto;
+  }
+
+  .signature-prefix {
+    color: var(--accent);
+    font-weight: bold;
+    font-style: normal;
   }
 
   /* --- SEQUENTIAL NAVIGATION BAR --- */
@@ -159,6 +202,13 @@ const readTime = (log.data as any).readTime
     width: 100%;
     padding: 0.65rem 1rem;
     text-decoration: none;
+  }
+
+  /* --- LEFT ALIGN PREV BUTTON --- */
+  .prev-slot .seq-btn,
+  .prev-slot .seq-disabled {
+    text-align: left;
+    align-items: flex-start;
   }
 
   .seq-disabled {

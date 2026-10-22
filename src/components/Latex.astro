@@ -1,0 +1,112 @@
+---
+import katex from 'katex';
+
+interface Props {
+  formula?: string;
+  displayMode?: boolean;
+  comment?: string;
+}
+
+const { formula = '', displayMode = true, comment } = Astro.props;
+const html = katex.renderToString(formula, {
+  throwOnError: false,
+  displayMode: displayMode,
+});
+---
+
+{displayMode ? (
+  <div class="katex-panel">
+    <span class="panel-tag">/// SYS.MATH_FUNCTION</span>
+    <div class="katex-scroll" set:html={html} />
+    {comment && (
+      <div class="katex-comment">
+        <span class="comment-prefix">//</span> {comment}
+      </div>
+    )}
+  </div>
+) : (
+  <span class="katex-inline" set:html={html} />
+)}
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+  crossorigin="anonymous"
+/>
+
+<style is:global>
+  .katex-panel {
+    position: relative;
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+    margin: 2rem 0;
+    padding-top: 0.5rem;
+  }
+
+  .katex-panel .panel-tag {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background-color: var(--bg);
+    color: var(--accent);
+    padding: 0 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--border);
+    z-index: 10;
+    line-height: normal;
+  }
+
+  .katex-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 1rem 1.25rem;
+    text-align: center;
+  }
+
+  .katex-scroll::-webkit-scrollbar {
+    height: 5px;
+  }
+  .katex-scroll::-webkit-scrollbar-track {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .katex-scroll::-webkit-scrollbar-thumb {
+    background: var(--accent);
+  }
+
+  .katex-scroll .katex-display {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .katex-comment {
+    border-top: 1px dashed var(--border);
+    padding: 0.55rem 1.25rem 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted, #a1a1aa);
+    text-align: center;
+    line-height: 1.5;
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+
+  .comment-prefix {
+    color: var(--accent);
+    font-weight: bold;
+    margin-right: 0.15rem;
+  }
+
+  /* Inline math tag */
+  .katex-inline {
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    padding: 0.1rem 0.35rem;
+  }
+</style>

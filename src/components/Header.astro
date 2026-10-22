@@ -2,7 +2,7 @@
 const { activePage } = Astro.props;
 ---
 
-<header class="site-header">
+<header class="site-header" transition:name="terminal-header">
   <div class="brand-container">
     <a href="/"><img src="/images/profile.jpg" alt="Robert Linsalato" class="header-profile-img" /></a>
     <div class="brand-text">
@@ -45,6 +45,7 @@ const { activePage } = Astro.props;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border);
+    position: relative;
   }
 
   @media (min-width: 600px) {
@@ -113,49 +114,46 @@ const { activePage } = Astro.props;
   .dropdown {
     position: relative;
     display: inline-block;
-    padding-bottom: 10px; /* The invisible hover bridge! */
+    padding-bottom: 10px;
+    z-index: 990;
   }
 
   /* --- DROPDOWN MENU PANEL --- */
   .dropdown-content {
-    display: none; /* Hidden by default */
+    display: none;
     position: absolute;
-    top: 100%; /* Positions it directly below the button */
+    top: 100%;
     left: 0;
     background-color: var(--panel);
     border: 1px solid var(--border);
-    z-index: 1000; /* Ensures it drops over the page content */
+    z-index: 1000; 
     min-width: 180px;
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
     flex-direction: column;
-    /* margin-top removed so the invisible bridge works perfectly */
   }
 
-  /* Show the dropdown when hovering over the wrapper */
   .dropdown:hover .dropdown-content {
     display: flex;
   }
 
   /* --- DROPDOWN ITEM TWEAKS --- */
-  /* Overrides standard terminal-btn styles so they don't jump around inside the menu */
   .dropdown-content .terminal-btn {
     border: none;
     border-bottom: 1px dashed var(--border);
     box-shadow: none; 
-    justify-content: flex-start; /* Aligns text to the left */
+    justify-content: flex-start; 
     border-radius: 0;
     margin: 0;
     width: 100%;
+    z-index: 999;
   }
 
-  /* Remove the dashed border from the last item */
   .dropdown-content .terminal-btn:last-child {
     border-bottom: none;
   }
 
-  /* Custom hover state for inner dropdown buttons */
   .dropdown-content .terminal-btn:hover {
-    transform: none; /* Prevents the 1px jump */
+    transform: none;
     background-color: #222528;
   }
 </style>

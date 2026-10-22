@@ -17,16 +17,10 @@ const isNew = (new Date().getTime() - new Date(date).getTime()) <= (30 * 24 * 60
 
 <div class="catalogue-row">
   <div class="main-info">
-    {/* Formats the date to look like: [15 Aug 2026] */}
     <span class="date">[{new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}]</span>
-    
-    {/* Glowing NEW tag triggers if the project is under 30 days old */}
     {isNew && <span class="new-alert">!!! NEW !!!</span>}
-    
     {badge && <span class="badge">/// {badge.toUpperCase()} ///</span>}
-    
     <a href={href} class="title-link">{title}</a>
-
     {tags.length > 0 && (
       <div class="tags-container">
         {tags.map(tag => (

@@ -4,13 +4,16 @@ import react from '@astrojs/react';
 
 import mdx from '@astrojs/mdx';
 
+import sitemap from '@astrojs/sitemap';
+
 export default defineConfig({
   site: 'https://robertlinsalato.com',
 
-  integrations: [react(), mdx()],
+  integrations: [react(), mdx(), sitemap()],
   
   redirects: {
-    '/home': '/'
+    '/home': '/',
+    '/devlog' : '/devlogs'
   },
 
   devToolbar: {
