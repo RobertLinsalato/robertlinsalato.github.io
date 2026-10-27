@@ -1,0 +1,659 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const links = [
+  {
+    title: "MAIN PORTFOLIO",
+    subtitle: "robertlinsalato.com // Full site, projects & devlogs",
+    url: "/",
+    tag: "SYS.ROOT",
+    external: false,
+  },
+  {
+    title: "GAME DEV & 3D ART",
+    subtitle: "Interactive systems, Unity tools, & 3D modeling",
+    url: "/games",
+    tag: "DIR.GAMES",
+    external: false,
+  },
+  {
+    title: "AUDIO ENGINEERING",
+    subtitle: "Live FOH mixing, broadcast audio, & sound design",
+    url: "/audio",
+    tag: "DIR.AUDIO",
+    external: false,
+  },
+  {
+    title: "ITCH.IO ARCHIVE",
+    subtitle: "Playable builds, prototypes, & game jam entries",
+    url: "https://thatfish4261.itch.io",
+    tag: "EXT.ITCH",
+    external: true,
+  },
+  {
+    title: "DEVLOG ARCHIVE",
+    subtitle: "Technical write-ups & project progress logs",
+    url: "/devlogs",
+    tag: "SYS.LOGS",
+    external: false,
+  },
+    {
+    title: "OPEN COMMUNICATION",
+    subtitle: "All social media links",
+    url: "/contact",
+    tag: "SYS.CONTACT",
+    external: false,
+  },
+  {
+    title: "DIRECT TRANSMISSION",
+    subtitle: "contact@robertlinsalato.com",
+    url: "mailto:contact@robertlinsalato.com",
+    tag: "COM.MAIL",
+    external: true,
+  }
+];
+---
+
+<Layout title="Robert Linsalato | Terminal Uplink">
+  <div class="crt-bg-wrapper" aria-hidden="true">
+    <div class="bg-grid"></div>
+  </div>
+
+  <main class="uplink-wrapper">
+    <!-- Top System Status Bar -->
+    <div class="sys-topbar">
+      <span class="status-indicator">
+        <span class="pulse-dot"></span>
+        <span data-scramble data-delay="0">SYS.ONLINE</span>
+      </span>
+      <span class="sys-clock" id="terminal-clock" data-scramble data-delay="80">00:00:00 UTC</span>
+    </div>
+
+    <!-- Bio / Identity Chassis -->
+    <section class="panel-container bio-chassis">
+      <div class="panel-header">
+        <h2 class="bloom-text" data-scramble data-delay="120">/// IDENTITY_VERIFIED</h2>
+        <span class="count" data-scramble data-delay="180">[UID: RL-4261]</span>
+      </div>
+
+      <div class="panel-body bio-body">
+        <div class="profile-frame">
+          <img src="/images/profile.jpg" alt="Robert Linsalato" class="profile-avatar" />
+        </div>
+
+        <h1 class="user-title bloom-text" data-scramble data-delay="220">ROBERT LINSALATO JR</h1>
+        <p class="user-role" data-scramble data-delay="300">&gt; Game Developer &amp; Audio Engineer</p>
+
+        <hr class="smallBreak" style="margin: 1rem auto; width: 90%;" />
+
+        <p class="user-bio" data-scramble data-delay="380">
+          Building games, creating 3D art, and mixing live Front of House &amp; broadcast audio.
+        </p>
+      </div>
+    </section>
+
+    <!-- Links Directory -->
+    <section class="links-section">
+      <div class="section-label">
+        <span class="bloom-text" data-scramble data-delay="450">/// SELECT_DESTINATION_NODE</span>
+        <span class="node-count">[{links.length} NODES]</span>
+      </div>
+
+      <div class="links-stack">
+        {links.map((link, index) => {
+          const baseDelay = 480 + (index * 75);
+          return (
+            <a 
+              href={link.url} 
+              class="uplink-card"
+              target={link.external ? "_blank" : "_self"}
+              rel={link.external ? "noopener noreferrer" : undefined}
+            >
+              <span class="card-tag">
+                /// {link.tag}
+              </span>
+
+              <div class="card-main">
+                <div class="card-text">
+                  <span class="card-title">
+                    <span class="prompt-arrow">&gt;</span>
+                    <span class="scramble-hover" data-scramble data-delay={baseDelay}>
+                      {link.title}
+                    </span>
+                  </span>
+                  <span class="card-sub">
+                    {link.subtitle}
+                  </span>
+                </div>
+
+                <div class="card-action">
+                  {link.external ? '[EXT ↗]' : '[EXEC ↵]'}
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Minimal Terminal Readout Footer -->
+    <div class="uplink-footer">
+      <span data-scramble data-delay="1050">TERM.VER // 2.0.26 — END OF LINE</span>
+      <span class="cursor-block">█</span>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const CHARS = '!<>-_\\/[]{}—=+*^?#01';
+
+  interface ScrambleJob {
+    el: HTMLElement;
+    original: string;
+    startTime: number;
+    duration: number;
+    lastUpdate: number;
+  }
+
+  let activeJobs: ScrambleJob[] = [];
+  let rafId: number | null = null;
+  let clockInterval: ReturnType<typeof setInterval> | null = null;
+
+  // Single unified requestAnimationFrame loop for all scrambling text
+  function tickScramble(now: number) {
+    for (let i = activeJobs.length - 1; i >= 0; i--) {
+      const job = activeJobs[i];
+
+      if (now < job.startTime) continue;
+
+      // Throttle DOM text updates to ~30fps (every 32ms) for authentic terminal feel & zero lag
+      if (now - job.lastUpdate < 32) continue;
+      job.lastUpdate = now;
+
+      const elapsed = now - job.startTime;
+      const progress = Math.min(elapsed / job.duration, 1);
+      const revealCount = Math.floor(progress * job.original.length);
+
+      if (progress >= 1) {
+        job.el.textContent = job.original;
+        job.el.dataset.scrambling = 'false';
+        activeJobs.splice(i, 1);
+        continue;
+      }
+
+      let out = '';
+      for (let c = 0; c < job.original.length; c++) {
+        const ch = job.original[c];
+        if (ch === ' ' || ch === '\n') {
+          out += ch;
+        } else if (c < revealCount) {
+          out += ch;
+        } else {
+          out += CHARS[(Math.random() * CHARS.length) | 0];
+        }
+      }
+      job.el.textContent = out;
+    }
+
+    if (activeJobs.length > 0) {
+      rafId = requestAnimationFrame(tickScramble);
+    } else {
+      rafId = null;
+    }
+  }
+
+  function queueScramble(el: HTMLElement, delay = 0, duration = 380) {
+    const original = (el.dataset.original || el.textContent || '').trim();
+    if (!original) return;
+    el.dataset.original = original;
+
+    // Remove any existing job for this element
+    activeJobs = activeJobs.filter((j) => j.el !== el);
+
+    if (delay > 0) {
+      // Mask characters cleanly until delay starts
+      el.textContent = original.replace(/\S/g, '░');
+    }
+
+    el.dataset.scrambling = 'true';
+    activeJobs.push({
+      el,
+      original,
+      startTime: performance.now() + delay,
+      duration,
+      lastUpdate: 0,
+    });
+
+    if (!rafId) {
+      rafId = requestAnimationFrame(tickScramble);
+    }
+  }
+
+  function initLandingTerminal() {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    activeJobs = [];
+
+    // 1. Queue initial staggered load-in
+    const targets = document.querySelectorAll<HTMLElement>('[data-scramble]');
+    targets.forEach((el) => {
+      const delay = parseInt(el.dataset.delay || '0', 10);
+      const textLen = (el.textContent || '').trim().length;
+      const duration = textLen > 45 ? 480 : 340;
+      queueScramble(el, delay, duration);
+    });
+
+    // 2. Hover scramble on link titles
+    const cards = document.querySelectorAll<HTMLElement>('.uplink-card');
+    cards.forEach((card) => {
+      const titleEl = card.querySelector<HTMLElement>('.scramble-hover');
+      if (!titleEl) return;
+
+      card.addEventListener('mouseenter', () => {
+        if (titleEl.dataset.scrambling !== 'true') {
+          queueScramble(titleEl, 0, 260);
+        }
+      });
+    });
+
+    // 3. Live UTC Terminal Clock
+    if (clockInterval) clearInterval(clockInterval);
+    const clockEl = document.getElementById('terminal-clock');
+    if (clockEl) {
+      const updateClock = () => {
+        if (clockEl.dataset.scrambling === 'true') return;
+        clockEl.textContent = new Date().toISOString().slice(11, 19) + ' UTC';
+      };
+      clockInterval = setInterval(updateClock, 1000);
+    }
+  }
+
+  document.addEventListener('astro:page-load', initLandingTerminal);
+</script>
+
+<style>
+  /* Hide the global site footer so this page acts as a standalone entity */
+  :global(body > footer) {
+    display: none !important;
+  }
+
+  .uplink-wrapper {
+    position: relative;
+    z-index: 2;
+    max-width: 520px;
+    width: 100%;
+    margin: 1rem auto 3rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* ============================================================
+     GPU-ACCELERATED BACKGROUND ANIMATION & CRT OVERLAYS
+     ============================================================ */
+  .crt-bg-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    contain: strict;
+    background: radial-gradient(circle at 50% 20%, #15221d 0%, var(--bg) 75%);
+  }
+
+  /* Flat 2D GPU-composited grid with radial fade (replaces heavy 3D perspective) */
+  .bg-grid {
+    position: absolute;
+    inset: -40px 0 0 0;
+    background-image: 
+      linear-gradient(to right, rgba(52, 211, 153, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(52, 211, 153, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(circle at 50% 35%, rgba(0, 0, 0, 0.9) 0%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at 50% 35%, rgba(0, 0, 0, 0.9) 0%, transparent 80%);
+    will-change: transform;
+    animation: grid-drift 4s linear infinite;
+  }
+
+  @keyframes grid-drift {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0, 40px, 0); }
+  }
+
+  /* Hardware-accelerated scanline sweep using translate3d instead of top */
+  .bg-scanline-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(52, 211, 153, 0.05),
+      transparent
+    );
+    will-change: transform;
+    animation: scanbar-sweep 8s linear infinite;
+  }
+
+  @keyframes scanbar-sweep {
+    0% { transform: translate3d(0, -130px, 0); }
+    100% { transform: translate3d(0, 100vh, 0); }
+  }
+
+  /* Combined Static CRT Scanlines + Vignette in a single layer */
+  .bg-crt-overlay {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at center, transparent 55%, rgba(0, 0, 0, 0.6) 100%),
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+  }
+
+  /* ============================================================
+     TERMINAL BLOOM & TOP STATUS BAR
+     ============================================================ */
+  .bloom-text {
+    color: var(--accent) !important;
+    text-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
+  }
+
+  .sys-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 0.5rem;
+    letter-spacing: 0.08em;
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(52, 211, 153, 0.45);
+  }
+
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    background-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: dot-blink 2s ease-in-out infinite;
+  }
+
+  @keyframes dot-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  /* ============================================================
+     BIO CHASSIS
+     ============================================================ */
+  .bio-chassis {
+    margin-bottom: 0.25rem;
+    background-color: var(--panel);
+    box-shadow: 
+      4px 4px 0px rgba(0, 0, 0, 0.75),
+      0 0 16px rgba(52, 211, 153, 0.06);
+    border-color: rgba(52, 211, 153, 0.35);
+  }
+
+  .bio-body {
+    padding: 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-frame {
+    position: relative;
+    padding: 0.3rem;
+    border: 1px solid var(--accent);
+    background-color: var(--bg);
+    box-shadow: 0 0 12px rgba(52, 211, 153, 0.22);
+    margin-bottom: 1rem;
+  }
+
+  .profile-avatar {
+    width: 88px;
+    height: 88px;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(70%) contrast(1.15);
+    transition: filter 0.25s ease;
+  }
+
+  .profile-frame:hover .profile-avatar {
+    filter: grayscale(0%) contrast(1.05);
+  }
+
+  .user-title {
+    font-size: 1.25rem;
+    margin: 0.25rem 0 0.15rem 0;
+    letter-spacing: 0.08em;
+  }
+
+  .user-role {
+    font-size: 0.8rem;
+    color: var(--text-heading);
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+
+  .user-bio {
+    font-size: 0.85rem;
+    color: var(--text);
+    line-height: 1.55;
+    max-width: 44ch;
+  }
+
+  /* ============================================================
+     LINK CARDS ("LINKTREE" STACK)
+     ============================================================ */
+  .links-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .section-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    padding: 0 0.2rem;
+  }
+
+  .node-count {
+    color: var(--text-muted);
+  }
+
+  .links-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+  }
+
+  .uplink-card,
+  .uplink-card:link,
+  .uplink-card:visited {
+    display: block;
+    position: relative;
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    padding: 1.15rem 1.1rem 0.9rem 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.65);
+    transition: 
+      transform 0.15s ease,
+      border-color 0.15s ease,
+      background-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .card-tag {
+    position: absolute;
+    top: -9px;
+    left: 10px;
+    background-color: var(--bg);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 0 0.45rem;
+    font-size: 0.68rem;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .card-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: var(--text-heading);
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: color 0.15s ease, text-shadow 0.15s ease;
+  }
+
+  .prompt-arrow {
+    color: var(--accent);
+    text-shadow: 0 0 6px rgba(52, 211, 153, 0.45);
+    transition: transform 0.15s ease;
+  }
+
+  .card-sub {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-action {
+    font-size: 0.72rem;
+    font-weight: bold;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    transition: color 0.15s ease, text-shadow 0.15s ease;
+  }
+
+  /* Hover & Focus Bloom States */
+  .uplink-card:hover,
+  .uplink-card:focus-visible {
+    border-color: var(--accent);
+    background-color: var(--panel-header);
+    transform: translate3d(0, -2px, 0);
+    box-shadow: 
+      3px 3px 0px var(--accent),
+      0 0 14px rgba(52, 211, 153, 0.2);
+    outline: none;
+  }
+
+  .uplink-card:hover .card-tag,
+  .uplink-card:focus-visible .card-tag {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .uplink-card:hover .card-title,
+  .uplink-card:focus-visible .card-title {
+    color: var(--accent);
+    text-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+  }
+
+  .uplink-card:hover .prompt-arrow,
+  .uplink-card:focus-visible .prompt-arrow {
+    transform: translate3d(3px, 0, 0);
+  }
+
+  .uplink-card:hover .card-action,
+  .uplink-card:focus-visible .card-action {
+    color: var(--accent);
+    text-shadow: 0 0 6px rgba(52, 211, 153, 0.45);
+  }
+
+  .uplink-card:active {
+    transform: translate3d(0, 1px, 0);
+    box-shadow: 1px 1px 0px var(--accent);
+  }
+
+  /* ============================================================
+     FOOTER READOUT
+     ============================================================ */
+  .uplink-footer {
+    margin-top: 0.75rem;
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .cursor-block {
+    color: var(--accent);
+    text-shadow: 0 0 6px var(--accent);
+    animation: cursor-blink 1s step-end infinite;
+  }
+
+  @keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  @media (max-width: 520px) {
+    .card-sub {
+      white-space: normal;
+    }
+    .card-main {
+      align-items: flex-start;
+    }
+    .card-action {
+      margin-top: 0.15rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bg-grid,
+    .bg-scanline-bar,
+    .pulse-dot {
+      animation: none !important;
+    }
+  }
+</style>
