@@ -7,7 +7,6 @@ description: "Creating, Simplifying, & Polishing"
 tags: ["astro", "css", "html"]
 signature: "oh yeah, there's also a signature at the end"
 ---
-import TerminalVideo from "../../components/TerminalVideo.astro";
 import Latex from '../../components/Latex.astro';
 
 # /// SOME_WEBSITE_UPDATES
@@ -86,10 +85,13 @@ It's now properly sized with a pleasant surprise in the middle :)
   </div>
 </div>
 
-<TerminalVideo 
-  src="/videos/devlogs/website/01/loading-transition-vid.mp4"
-  poster="/videos/devlogs/website/01/transition-vid-thumb.jpg"
-/>
+<div class="hardware-panel video-panel">
+  <span class="panel-tag">/// SYS.VIDEO_FEED</span>
+  <video controls preload="metadata" playsinline>
+    <source src="/videos/devlogs/website/01/loading-transition-vid.mp4#t=0.1" type="video/mp4" />
+  </video>
+</div>
+
 <hr class="fullBreak" />
 
 ## /// MATH+FORMULAS

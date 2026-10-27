@@ -15,10 +15,13 @@ const { activePage } = Astro.props;
     <a href="/" class={activePage === 'home' ? 'active' : ''}>[HOME]</a>
     <a href="/about" class={activePage === 'about' ? 'active' : ''}>[ABOUT]</a>
     
-    <div class="dropdown">
+    <div class="dropdown" id="projects-dropdown">
       <a 
         href="/projects" 
+        id="projects-toggle"
         class={activePage === 'projects' || activePage === 'games' || activePage === 'audio' || activePage === 'other' ? 'active' : ''}
+        aria-haspopup="true"
+        aria-expanded="false"
       >
         [PROJECTS] ▼
       </a>
@@ -35,6 +38,39 @@ const { activePage } = Astro.props;
     <a href="/contact" class={activePage === 'contact' ? 'active' : ''}>[CONTACT]</a>
   </nav>
 </header>
+
+<script>
+  function setupMobileDropdown() {
+    const dropdown = document.getElementById('projects-dropdown');
+    const toggleBtn = document.getElementById('projects-toggle');
+    if (!dropdown || !toggleBtn) return;
+
+    const handleToggle = (e: MouseEvent) => {
+      // Check if user is on a touch/pointer device without hover capability OR under standard mobile width
+      const isMobile = window.matchMedia('(hover: none), (max-width: 600px)').matches;
+      
+      if (isMobile) {
+        e.preventDefault(); // Stop immediate navigation to /projects so menu toggles
+        const isOpen = dropdown.classList.toggle('is-open');
+        toggleBtn.setAttribute('aria-expanded', String(isOpen));
+      }
+    };
+
+    // Close when tapping anywhere outside
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (!dropdown.contains(e.target as Node)) {
+        dropdown.classList.remove('is-open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      }
+    };
+
+    toggleBtn.addEventListener('click', handleToggle);
+    document.addEventListener('click', handleOutsideClick);
+  }
+
+  document.addEventListener('DOMContentLoaded', setupMobileDropdown);
+  document.addEventListener('astro:page-load', setupMobileDropdown);
+</script>
 
 <style>
   .site-header {
@@ -132,11 +168,17 @@ const { activePage } = Astro.props;
     flex-direction: column;
   }
 
-  .dropdown:hover .dropdown-content {
+  /* Only desktop mice trigger hover */
+  @media (hover: hover) and (pointer: fine) {
+    .dropdown:hover .dropdown-content {
+      display: flex;
+    }
+  }
+
+  .dropdown.is-open .dropdown-content {
     display: flex;
   }
 
-  /* --- DROPDOWN ITEM TWEAKS --- */
   .dropdown-content .terminal-btn {
     border: none;
     border-bottom: 1px dashed var(--border);

@@ -7,8 +7,6 @@ description: "Post-grad experimentation with custom movement mechanics."
 tags: ["unity", "game design", "movement mechanics", "prototyping"]
 signature: "welp... time to worldbuild"
 ---
-import TerminalVideo from "../../components/TerminalVideo.astro";
-
 # /// SYSTEM_LOG
 A little bit of backstory is needed before I start talking about what I've begun to prototype.
 (If you don't want to read how I made everything, you can just head down to the [TL;DR section](#tldr))
@@ -132,10 +130,13 @@ With these preliminary systems in place, I was able to start prototyping the dif
 I started simple (as I was and still am always learning) with a basic movement system that allowed the player to walk, jump, and sprint.
 Because it was relatively simple and basic, I wanted to add some feedback to the player to make the movement feel more responsive and fun, which became a simple particle system that started and stopped based off if the player was sprinting or not.
 
-<TerminalVideo 
-  src="/videos/devlogs/animal-game/01/movement-basic.mp4" 
-  poster="/videos/devlogs/animal-game/01/thumbnails/thumb-basic.jpg"
-/>
+<div class="hardware-panel video-panel">
+  <span class="panel-tag">/// SYS.VIDEO_FEED</span>
+  <video controls preload="metadata" playsinline>
+    <source src="/videos/devlogs/animal-game/01/movement-basic.mp4#t=0.1" type="video/mp4" />
+  </video>
+</div>
+
 <hr class="fullBreak" />
 
 ### /// DASHING
@@ -143,10 +144,13 @@ After basic movement was completed (or at least in a working state), I moved ont
 Dashing was extremely simple to add; give a velocity boost in the direction of the player's input for however long the dash is set for in the editor.
 Give the player some visual feedback and ***voilà***, dashing.
 
-<TerminalVideo 
-  src="/videos/devlogs/animal-game/01/movement-dash.mp4" 
-  poster="/videos/devlogs/animal-game/01/thumbnails/thumb-dash.jpg"
-/>
+<div class="hardware-panel video-panel">
+  <span class="panel-tag">/// SYS.VIDEO_FEED</span>
+  <video controls preload="metadata" playsinline>
+    <source src="/videos/devlogs/animal-game/01/movement-dash.mp4#t=0.1" type="video/mp4" />
+  </video>
+</div>
+
 <hr class="fullBreak" />
 
 ### /// WALL_BOUNCING
@@ -159,10 +163,13 @@ Then, it takes the normal of the surface the raycast hit and uses that along wit
 It's the same process upward, just using the up-direction of the player instead of the surface normal.
 After all is said and done, it looks like this!
 
-<TerminalVideo 
-  src="/videos/devlogs/animal-game/01/movement-walljump.mp4"
-  poster="/videos/devlogs/animal-game/01/thumbnails/thumb-wallJump.jpg"
-/>
+<div class="hardware-panel video-panel">
+  <span class="panel-tag">/// SYS.VIDEO_FEED</span>
+  <video controls preload="metadata" playsinline>
+    <source src="/videos/devlogs/animal-game/01/movement-walljump.mp4#t=0.1" type="video/mp4" />
+  </video>
+</div>
+
 <hr class="fullBreak" />
 
 ### /// CROUCHING
@@ -171,10 +178,13 @@ It was mostly because I wanted to add slide mechanics, but I kept on hitting roa
 For now, sliding is a mechanic that I'm waiting on.
 Mostly, I just want to focus on other mechanics and then doing a polish session later on where I make all the mechanics flow better between one another.
 
-<TerminalVideo 
-  src="/videos/devlogs/animal-game/01/movement-crouch.mp4" 
-  poster="/videos/devlogs/animal-game/01/thumbnails/thumb-crouch.jpg"
-/>
+<div class="hardware-panel video-panel">
+  <span class="panel-tag">/// SYS.VIDEO_FEED</span>
+  <video controls preload="metadata" playsinline>
+    <source src="/videos/devlogs/animal-game/01/movement-crouch.mp4#t=0.1" type="video/mp4" />
+  </video>
+</div>
+
 <hr class="fullBreak" />
 
 ### /// GRAPPLING
@@ -187,10 +197,13 @@ It keeps scanning for grapple targets mid-air so you can chain pulls together, c
 It was difficult to match the style I was basing it off of, *Titanfall 2*'s grapple mechanic.
 It still needs a lot of work, especially the transition from the air to the ground and keeping momentum alive, but it's one of the things I'm most proud of.
 
-<TerminalVideo 
-  src="/videos/devlogs/animal-game/01/movement-grapple.mp4"
-  poster="/videos/devlogs/animal-game/01/thumbnails/thumb-grapple.jpg"
-/>
+<div class="hardware-panel video-panel">
+  <span class="panel-tag">/// SYS.VIDEO_FEED</span>
+  <video controls preload="metadata" playsinline>
+    <source src="/videos/devlogs/animal-game/01/movement-grapple.mp4#t=0.1" type="video/mp4" />
+  </video>
+</div>
+
 <hr class="smallBreak" />
 
 ## WHAT_NOW?

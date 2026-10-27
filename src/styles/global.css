@@ -644,6 +644,57 @@ h1, h2, h3 {
   box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
 }
 
+/* Responsive default video sizing */
+video {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+}
+
+.markdown-content video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+  margin: 1.5rem 0;
+}
+
+.hardware-panel.video-panel {
+  padding: 0;
+  margin: 2rem 0;
+  position: relative;
+  overflow: visible;
+  background-color: #000;
+  line-height: 0;
+}
+
+.hardware-panel.video-panel .panel-tag {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: var(--bg);
+  color: var(--accent);
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--border);
+  z-index: 10;
+  line-height: normal;
+}
+
+.hardware-panel.video-panel video {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+}
+
 /* MARK: KaTeX */
 .katex,
 .katex * {
