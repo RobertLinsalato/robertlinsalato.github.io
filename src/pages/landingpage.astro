@@ -103,10 +103,10 @@ const links = [
         {links.map((link, index) => {
           const baseDelay = 480 + (index * 75);
           return (
-            <a 
+<a 
               href={link.url} 
               class="uplink-card"
-              target={link.external ? "_blank" : "_self"}
+              target={link.external ? "_blank" : undefined}
               rel={link.external ? "noopener noreferrer" : undefined}
             >
               <span class="card-tag">
@@ -269,6 +269,18 @@ const links = [
       clockInterval = setInterval(updateClock, 1000);
     }
   }
+
+  document.addEventListener('astro:before-preparation', () => {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    activeJobs = [];
+    if (clockInterval) {
+      clearInterval(clockInterval);
+      clockInterval = null;
+    }
+  });
 
   document.addEventListener('astro:page-load', initLandingTerminal);
 </script>

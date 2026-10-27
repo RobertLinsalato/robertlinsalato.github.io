@@ -131,11 +131,18 @@ const { title = "Robert Linsalato" } = Astro.props;
       document.addEventListener('DOMContentLoaded', setupImageModal);
       document.addEventListener('astro:page-load', setupImageModal);
 
-      // --- TRANSITION SHUTTER CONTROLLER ---
-      const shutter = document.getElementById('terminal-shutter');
+// --- TRANSITION SHUTTER CONTROLLER ---
+      let shutterOpenTimeout: ReturnType<typeof setTimeout> | null = null;
 
       document.addEventListener('astro:before-preparation', (e) => {
+        // Always grab the live DOM element so the reference can never go stale
+        const shutter = document.getElementById('terminal-shutter');
         if (!shutter) return;
+
+        if (shutterOpenTimeout) {
+          clearTimeout(shutterOpenTimeout);
+          shutterOpenTimeout = null;
+        }
 
         document.body.style.overflow = 'hidden';
 
@@ -144,25 +151,24 @@ const { title = "Robert Linsalato" } = Astro.props;
 
         const originalLoader = (e as any).loader;
         (e as any).loader = async () => {
-          // Slowed down to 600ms so the loading box is clearly visible
           await new Promise((resolve) => setTimeout(resolve, 600));
           await originalLoader();
         };
       });
 
       document.addEventListener('astro:after-swap', () => {
+        // Re-query the live DOM element in the new document
+        const shutter = document.getElementById('terminal-shutter');
         if (!shutter) return;
 
         shutter.classList.remove('shutter-closing');
         shutter.classList.add('shutter-opening');
 
-        // Matches the slower 500ms exit animation
-        setTimeout(() => {
+        shutterOpenTimeout = setTimeout(() => {
           shutter.classList.remove('shutter-opening');
           document.body.style.overflow = '';
         }, 500);
-      });
-    </script>
+      });    </script>
   <Footer />
   </body>
 </html>
